@@ -1,0 +1,124 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+
+group = 'cn.evolvefield.mods'
+version = '1.19-1.8.3'
+
+java {
+    archivesBaseName = 'Bot-Connect-forge'
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+minecraft {
+
+    mappings channel: 'official', version: '1.19'
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', 'botapi'
+
+            mods {
+                botapi {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', 'botapi'
+
+            mods {
+                botapi {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        gameTestServer {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', 'botapi'
+
+            mods {
+                botapi {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            args '--mod', 'botapi', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                botapi {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+
+}
+
+dependencies {
+
+    minecraft 'net.minecraftforge:forge:1.19-41.0.1'
+
+
+}
+
+// Example for how to get properties into the manifest for reading at runtime.
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "botapi",
+                "Specification-Vendor"    : "cnlimiter",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : "cnlimiter",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar')
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}

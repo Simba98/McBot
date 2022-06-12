@@ -12,7 +12,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.regex.Pattern;
 
@@ -44,7 +44,7 @@ public class ConnectCommand {
             BotApi.config.getCommon().setWsCommon("ws://" + parameter);
             BotData.setBotFrame("cqhttp");
             BotApi.config.getCommon().setFrame("cqhttp");
-            context.getSource().sendSuccess(new TextComponent("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "cqhttp"), true);
+            context.getSource().sendSuccess(Component.literal("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "cqhttp"), true);
             WebSocketService.main(BotData.getWs());
             BotApi.config.getStatus().setRECEIVE_ENABLED(true);
             BotApi.config.getCommon().setEnable(true);
@@ -53,7 +53,7 @@ public class ConnectCommand {
             return 1;
 
         } else {
-            context.getSource().sendSuccess(new TextComponent(ChatFormatting.RED + "参数错误❌"), true);
+            context.getSource().sendSuccess(Component.literal(ChatFormatting.RED + "参数错误❌"), true);
             return 0;
         }
     }
@@ -68,7 +68,7 @@ public class ConnectCommand {
             BotApi.config.getMirai().setWsMirai("ws://" + parameter);
             BotData.setBotFrame("mirai");
             BotApi.config.getCommon().setFrame("mirai");
-            context.getSource().sendSuccess(new TextComponent("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "mirai"), true);
+            context.getSource().sendSuccess(Component.literal("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "mirai"), true);
             WebSocketService.main(BotData.getWs() + "/all?verifyKey=" + BotData.getVerifyKey() + "&qq=" + BotData.getQQId());
             BotApi.config.getStatus().setRECEIVE_ENABLED(true);
             BotApi.config.getCommon().setEnable(true);
@@ -77,14 +77,14 @@ public class ConnectCommand {
             return 1;
 
         } else {
-            context.getSource().sendSuccess(new TextComponent(ChatFormatting.RED + "参数错误"), true);
+            context.getSource().sendSuccess(Component.literal(ChatFormatting.RED + "参数错误"), true);
             return 0;
         }
     }
 
     public static int cqhttpCommonExecute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 
-        context.getSource().sendSuccess(new TextComponent("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "cqhttp"), true);
+        context.getSource().sendSuccess(Component.literal("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "cqhttp"), true);
         WebSocketService.main(BotApi.config.getCommon().getWsCommon());
         BotApi.config.getStatus().setRECEIVE_ENABLED(true);
         BotApi.config.getCommon().setEnable(true);
@@ -96,7 +96,7 @@ public class ConnectCommand {
     public static int miraiCommonExecute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 
 
-        context.getSource().sendSuccess(new TextComponent("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "mirai"), true);
+        context.getSource().sendSuccess(Component.literal("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "mirai"), true);
         WebSocketService.main(BotApi.config.getMirai().getWsMirai() + "/all?verifyKey=" + BotData.getVerifyKey() + "&qq=" + BotData.getQQId());
         BotApi.config.getStatus().setRECEIVE_ENABLED(true);
         BotApi.config.getCommon().setEnable(true);

@@ -9,7 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class StatusCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> register() {
@@ -58,7 +58,7 @@ public class StatusCommand {
                         + "发送玩家死亡消息状态:" + sDeathEnabled + "\n"
                         + "发送玩家成就消息状态:" + sAchievementsEnabled + "\n"
                         + "发送群成员进/退群消息状态:" + sWelcomeEnabled + "\n";
-        context.getSource().sendSuccess(new TextComponent(toSend), true);
+        context.getSource().sendSuccess(Component.literal(toSend), true);
         return 1;
     }
 }

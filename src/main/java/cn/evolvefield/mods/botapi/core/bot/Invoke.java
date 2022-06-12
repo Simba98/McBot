@@ -10,9 +10,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.server.players.UserWhiteList;
@@ -91,7 +88,7 @@ public class Invoke {
             if (!event.getRole().equals("member")) {
                 masterMsgParse(whiteListCommand, formatMsg, commandBody);
             }
-            memberMsgParse(event, message, bindCommand, commandBody, formatMsg);
+            memberMsgParse(event, bindCommand, commandBody, formatMsg);
 
         } else if (BotData.getBotFrame().equalsIgnoreCase("mirai")) {
             message = event.getMiraiMessage().get(1).getMessage();
@@ -101,13 +98,13 @@ public class Invoke {
             if (!event.getPermission().equals("MEMBER")) {
                 masterMsgParse(whiteListCommand, formatMsg, commandBody);
             }
-            memberMsgParse(event, message, bindCommand, commandBody, formatMsg);
+            memberMsgParse(event, bindCommand, commandBody, formatMsg);
 
         }
 
     }
 
-    private static void memberMsgParse(GroupMessageEvent event, String message, String bindCommand, String commandBody, String[] formatMsg) {
+    private static void memberMsgParse(GroupMessageEvent event, String bindCommand, String commandBody, String[] formatMsg) {
         if (commandBody.equals("tps")) {
             SendMessage.Group(event.getGroupId(), tpsCmd());
         } else if (commandBody.equals("list")) {
@@ -155,7 +152,7 @@ public class Invoke {
                 case "add" -> {
                     String playerName = formatMsg[2];
                     int success = BotApi.SERVER.getCommands().performCommand(new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, BotApi.SERVER.overworld(), 4, "",
-                            new TextComponent(""), Objects.requireNonNull(BotApi.SERVER), null), "whitelist add " + playerName);
+                            Component.literal(""), Objects.requireNonNull(BotApi.SERVER), null), "whitelist add " + playerName);
 
                     if (success == 0) {
                         SendMessage.Group(BotApi.config.getCommon().getGroupId(), "添加" + playerName + "至白名单失败或已经添加了白名单！");
@@ -166,12 +163,11 @@ public class Invoke {
                     if (BotApi.config.getCommon().isDebuggable()) {
                         BotApi.LOGGER.info("处理命令white add " + playerName);
                     }
-                    break;
                 }
                 case "del" -> {
                     String playerName = formatMsg[2];
-                    int success = BotApi.SERVER.getCommands().performCommand(new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, (ServerLevel) BotApi.SERVER.overworld(), 4, "",
-                            new TextComponent(""), Objects.requireNonNull(BotApi.SERVER), null), "whitelist remove " + playerName);
+                    int success = BotApi.SERVER.getCommands().performCommand(new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, BotApi.SERVER.overworld(), 4, "",
+                            Component.literal(""), Objects.requireNonNull(BotApi.SERVER), null), "whitelist remove " + playerName);
 
                     if (success == 0) {
                         SendMessage.Group(BotApi.config.getCommon().getGroupId(), "从白名单移除" + playerName + "失败或已经从白名单移除！");
@@ -181,7 +177,6 @@ public class Invoke {
                     if (BotApi.config.getCommon().isDebuggable()) {
                         BotApi.LOGGER.info("处理命令white del " + playerName);
                     }
-                    break;
                 }
                 case "list" -> {
                     String[] strings = BotApi.SERVER.getPlayerList().getWhiteListNames();
@@ -208,7 +203,6 @@ public class Invoke {
                     if (BotApi.config.getCommon().isDebuggable()) {
                         BotApi.LOGGER.info("处理命令white on");
                     }
-                    break;
                 }
                 case "off" -> {
                     PlayerList playerList = BotApi.SERVER.getPlayerList();
@@ -223,7 +217,6 @@ public class Invoke {
                     if (BotApi.config.getCommon().isDebuggable()) {
                         BotApi.LOGGER.info("处理命令white off");
                     }
-                    break;
                 }
                 case "reload" -> {
                     BotApi.SERVER.getPlayerList().reloadWhiteList();
@@ -232,7 +225,6 @@ public class Invoke {
                     if (BotApi.config.getCommon().isDebuggable()) {
                         BotApi.LOGGER.info("处理命令white reload");
                     }
-                    break;
                 }
             }
         }
@@ -246,7 +238,7 @@ public class Invoke {
 
             for (ServerPlayer serverPlayer : list) {
                 if (!userWhiteList.isWhiteListed(serverPlayer.getGameProfile())) {
-                    serverPlayer.connection.disconnect(new TranslatableComponent("multiplayer.disconnect.not_whitelisted"));
+                    serverPlayer.connection.disconnect(Component.translatable("multiplayer.disconnect.not_whitelisted"));
                 }
             }
 
@@ -280,8 +272,8 @@ public class Invoke {
         if (users.size() > 0) {
             Component userList = users.stream()
                     .map(Player::getDisplayName)
-                    .reduce(new TextComponent(""), (listString, user) ->
-                            listString.getString().length() == 0 ? user : new TextComponent(listString.getString() + ", " + user.getString())
+                    .reduce(Component.literal(""), (listString, user) ->
+                            listString.getString().length() == 0 ? user : Component.literal(listString.getString() + ", " + user.getString())
                     );
             result += "\n" + "玩家列表: " + userList.getString();
         }

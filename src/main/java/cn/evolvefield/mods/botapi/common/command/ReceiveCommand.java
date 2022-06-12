@@ -8,7 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -33,10 +33,10 @@ public class ReceiveCommand {
         ConfigManger.saveBotConfig(BotApi.config);
         if (isEnabled) {
             context.getSource().sendSuccess(
-                    new TextComponent("全局接收群消息开关已被设置为打开"), true);
+                    Component.literal("全局接收群消息开关已被设置为打开"), true);
         } else {
             context.getSource().sendSuccess(
-                    new TextComponent("全局接收群消息开关已被设置为关闭"), true);
+                    Component.literal("全局接收群消息开关已被设置为关闭"), true);
         }
         return 0;
     }
@@ -48,11 +48,11 @@ public class ReceiveCommand {
             BotApi.config.getStatus().setRECEIVE_ENABLED(true);
             ConfigManger.saveBotConfig(BotApi.config);
             context.getSource().sendSuccess(
-                    new TextComponent("接收群内聊天消息开关已被设置为打开"), true);
+                    Component.literal("接收群内聊天消息开关已被设置为打开"), true);
         } else {
             ConfigManger.saveBotConfig(BotApi.config);
             context.getSource().sendSuccess(
-                    new TextComponent("接收群内聊天消息开关已被设置为关闭"), true);
+                    Component.literal("接收群内聊天消息开关已被设置为关闭"), true);
         }
         return 0;
 
@@ -65,11 +65,11 @@ public class ReceiveCommand {
             BotApi.config.getStatus().setRECEIVE_ENABLED(true);
             ConfigManger.saveBotConfig(BotApi.config);
             context.getSource().sendSuccess(
-                    new TextComponent("接收群内命令消息开关已被设置为打开"), true);
+                    Component.literal("接收群内命令消息开关已被设置为打开"), true);
         } else {
             ConfigManger.saveBotConfig(BotApi.config);
             context.getSource().sendSuccess(
-                    new TextComponent("接收群内命令消息开关已被设置为关闭"), true);
+                    Component.literal("接收群内命令消息开关已被设置为关闭"), true);
         }
         return 0;
     }

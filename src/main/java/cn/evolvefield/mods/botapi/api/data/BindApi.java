@@ -125,6 +125,7 @@ public class BindApi {
         return BindData.delGuildBindData(tinyId);
     }
 
+
     //新增绑定玩家
     public static Boolean addGroupBind(long QQId, String Player) {
         if (BotApi.config.getCommon().isSQL_ENABLED()) {

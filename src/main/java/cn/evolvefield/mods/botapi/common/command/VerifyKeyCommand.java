@@ -8,7 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class VerifyKeyCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> register() {
@@ -22,7 +22,7 @@ public class VerifyKeyCommand {
         BotApi.config.getMirai().setVerifyKey(id);
         ConfigManger.saveBotConfig(BotApi.config);
         context.getSource().sendSuccess(
-                new TextComponent("已设置Mirai框架的VerifyKey为:" + id), true);
+                Component.literal("已设置Mirai框架的VerifyKey为:" + id), true);
         return 0;
     }
 

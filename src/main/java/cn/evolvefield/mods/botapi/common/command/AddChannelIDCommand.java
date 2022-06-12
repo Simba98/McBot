@@ -8,7 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -25,7 +25,7 @@ public class AddChannelIDCommand {
         var id = context.getArgument("ChannelID", String.class);
         BotApi.config.getCommon().setGuildOn(true);
         if (BotApi.config.getCommon().getChannelIdList().contains(id)) {
-            context.getSource().sendSuccess(new TextComponent("子频道号:" + id + "已经出现了！"), true);
+            context.getSource().sendSuccess(Component.literal("子频道号:" + id + "已经出现了！"), true);
         } else {
             BotApi.config.getCommon().addChannelId(id);
         }

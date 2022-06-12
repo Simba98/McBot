@@ -6,7 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class HelpCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> register() {
@@ -43,7 +43,7 @@ public class HelpCommand {
                         QQ群：720975019找群主
                         Github：https://github.com/Nova-Committee/Bot-Connect/issues/new 提交问题
                         """;
-        context.getSource().sendSuccess(new TextComponent(toSend), true);
+        context.getSource().sendSuccess(Component.literal(toSend), true);
         return 1;
     }
 }

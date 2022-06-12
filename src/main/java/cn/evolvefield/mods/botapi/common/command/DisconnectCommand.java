@@ -9,7 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 
 public class DisconnectCommand {
@@ -20,9 +20,9 @@ public class DisconnectCommand {
     public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         WebSocketService.client.close();
         if (WebSocketService.client.isClosed()) {
-            context.getSource().sendSuccess(new TextComponent("WebSocket已断开连接"), true);
+            context.getSource().sendSuccess(Component.literal("WebSocket已断开连接"), true);
         } else {
-            context.getSource().sendSuccess(new TextComponent("WebSocket目前未连接"), true);
+            context.getSource().sendSuccess(Component.literal("WebSocket目前未连接"), true);
         }
         BotApi.config.getCommon().setEnable(false);
         ConfigManger.saveBotConfig(BotApi.config);

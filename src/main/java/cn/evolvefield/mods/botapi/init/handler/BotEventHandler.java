@@ -9,8 +9,6 @@ import cn.evolvefield.mods.botapi.core.bot.BotData;
 import cn.evolvefield.mods.botapi.core.bot.Invoke;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -123,6 +121,14 @@ public class BotEventHandler {
                     SendMessage.Group(BotApi.config.getCommon().getGroupId(), BotApi.config.getCmd().getWelcomeNotice());
                 } else if (event.getNoticeType().equals("group_decrease")) {
                     SendMessage.Group(BotApi.config.getCommon().getGroupId(), BotApi.config.getCmd().getLeaveNotice());
+
+//                    if (BindApi.existGroupBind(event.getUser_id())){
+//                        BindApi.delGroupBind(event.getUser_id());
+//                        BotApi.SERVER.getCommands().performCommand(new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, BotApi.SERVER.overworld(), 4, "",
+//                                Component.literal(""), Objects.requireNonNull(BotApi.SERVER), null), "whitelist remove " + event);
+//
+//                    }
+
                 }
             } else if (BotData.getBotFrame().equalsIgnoreCase("mirai")) {
                 if (event.getNoticeType().equals("MemberJoinEvent")) {

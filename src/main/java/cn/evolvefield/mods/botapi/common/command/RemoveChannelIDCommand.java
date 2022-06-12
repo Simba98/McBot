@@ -8,7 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -27,7 +27,7 @@ public class RemoveChannelIDCommand {
             BotApi.config.getCommon().removeChannelId(id);
 
         } else {
-            context.getSource().sendSuccess(new TextComponent("子频道号:" + id + "并未出现！"), true);
+            context.getSource().sendSuccess(Component.literal("子频道号:" + id + "并未出现！"), true);
 
         }
         ConfigManger.saveBotConfig(BotApi.config);

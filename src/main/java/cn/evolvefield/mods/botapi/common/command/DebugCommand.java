@@ -8,7 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -27,9 +27,9 @@ public class DebugCommand {
         BotApi.config.getCommon().setDebuggable(isEnabled);
         ConfigManger.saveBotConfig(BotApi.config);
         if (isEnabled) {
-            context.getSource().sendSuccess(new TextComponent("已开启开发者模式"), true);
+            context.getSource().sendSuccess(Component.literal("已开启开发者模式"), true);
         } else {
-            context.getSource().sendSuccess(new TextComponent("已关闭开发者模式"), true);
+            context.getSource().sendSuccess(Component.literal("已关闭开发者模式"), true);
         }
 
         return 0;

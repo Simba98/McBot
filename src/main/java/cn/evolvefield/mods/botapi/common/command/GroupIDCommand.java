@@ -8,7 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -25,7 +25,7 @@ public class GroupIDCommand {
         BotApi.config.getCommon().setGroupId(id);
         ConfigManger.saveBotConfig(BotApi.config);
         context.getSource().sendSuccess(
-                new TextComponent("已设置互通的群号为:" + id), true);
+                Component.literal("已设置互通的群号为:" + id), true);
         return 0;
     }
 

@@ -2,24 +2,19 @@ package cn.evolvefield.mods.botapi.init.handler;
 
 import cn.evolvefield.mods.botapi.Static;
 import cn.evolvefield.mods.botapi.api.cmd.CustomCmd;
-import cn.evolvefield.mods.botapi.api.cmd.CustomCmdUtil;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +55,7 @@ public class CustomCmdHandler {
     public void loadSingularities() {
         var stopwatch = Stopwatch.createStarted();
 
-        //this.writeDefaultCustomCmdFiles();
+        this.writeDefaultCustomCmdFiles();
 
         clear();
 
@@ -77,22 +72,26 @@ public class CustomCmdHandler {
         var dir = FMLPaths.CONFIGDIR.get().resolve("avaritia/singularities/").toFile();
 
         if (!dir.exists() && dir.mkdirs()) {
-//            for (var singularity : ModSingularities.getDefaults()) {
-//                var json = SingularityUtils.writeToJson(singularity);
-//                FileWriter writer = null;
-//
-//                try {
-//                    var file = new File(dir, singularity.getId().getPath() + ".json");
-//                    writer = new FileWriter(file);
-//
-//                    GSON.toJson(json, writer);
-//                    writer.close();
-//                } catch (Exception e) {
-//                    Static.LOGGER.error("An error occurred while generating default singularities", e);
-//                } finally {
-//                    IOUtils.closeQuietly(writer);
-//                }
-//            }
+            var json = new JsonObject();
+            json.addProperty("alies", "list");
+            json.addProperty("content", "list");
+            json.addProperty("role", 0);
+            json.addProperty("enable", true);
+
+            FileWriter writer = null;
+
+            try {
+                var file = new File(dir, "list.json");
+                writer = new FileWriter(file);
+
+                GSON.toJson(json, writer);
+                writer.close();
+            } catch (Exception e) {
+                Static.LOGGER.error("An error occurred while generating default custom cmd", e);
+            } finally {
+                IOUtils.closeQuietly(writer);
+            }
+
         }
     }
 
@@ -112,7 +111,7 @@ public class CustomCmdHandler {
                 var name = file.getName().replace(".json", "");
                 json = parser.parse(reader).getAsJsonObject();
 
-                customCmd = CustomCmdUtil.loadFromJson(new ResourceLocation(Static.MODID, name), json);
+                customCmd = CustomCmd.loadFromJson(new ResourceLocation(Static.MODID, name), json);
 
                 reader.close();
             } catch (Exception e) {

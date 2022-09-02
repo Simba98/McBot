@@ -35,7 +35,7 @@ public class BotEventHandler {
                 if (event.getMessage().startsWith(BotApi.config.getCmd().getCommandStart())
                         && BotApi.config.getStatus().isR_COMMAND_ENABLED()) {
 
-                    Invoke.invokeCommand1(event);
+                    Invoke.invokeCommand(event);
 
                 } else if (!event.getMessage().contains("[CQ:") && BotApi.config.getStatus().isR_CHAT_ENABLE()
                         && event.getUserId() != BotApi.config.getCommon().getBotId()) {

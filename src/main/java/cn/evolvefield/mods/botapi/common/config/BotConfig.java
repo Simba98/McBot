@@ -294,7 +294,7 @@ public class BotConfig {
         @SerializedName("master_id")
         private long masterId = 0;
         @SerializedName("ws_common")
-        private String wsCommon = "ws://127.0.0.1:6700";
+        private String wsCommon = "ws://127.0.0.1:8080";
         @SerializedName("ws_Key")
         private String wsKey = "";
         @SerializedName("enable")

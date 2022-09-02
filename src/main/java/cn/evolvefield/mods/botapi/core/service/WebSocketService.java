@@ -36,7 +36,7 @@ public class WebSocketService {
                     JsonsObject jsons = new JsonsObject(message);
 
                     if (BotApi.config.getCommon().isDebuggable()) {
-                        BotApi.LOGGER.info(jsons);
+                        BotApi.LOGGER.info(jsons.toString());
                     }
 
                     if (BotData.getBotFrame().equalsIgnoreCase("cqhttp")) {

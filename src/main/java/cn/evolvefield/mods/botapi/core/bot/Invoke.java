@@ -35,65 +35,49 @@ public class Invoke {
             message = event.getMessage();
             String[] formatMsg = message.split(" ");
             String commandBody = formatMsg[0].substring(1);
+//            if (!event.getRole().equals("MEMBER") || !event.getRole().equals("member")) {
+//                CustomCmdHandler.getInstance().getCustomCmds().stream()
+//                        .filter(customCmd -> customCmd.getRequirePermission() == 1 && customCmd.getCmdAlies().equals(commandBody))
+//                        .forEach(customCmd -> SendMessage.GroupCmd(customCmd, event));
+//            }
+//            CustomCmdHandler.getInstance().getCustomCmds().stream()
+//                    .filter(customCmd -> customCmd.getRequirePermission() == 0 && customCmd.getCmdAlies().equals(commandBody))
+//                    .forEach(customCmd -> SendMessage.GroupCmd(customCmd, event));
 
-            if (commandBody.equals("tps")) {
-                SendMessage.ChannelGroup(event.getGuild_id(), event.getChannel_id(), tpsCmd());
-
-            } else if (commandBody.equals("list")) {
-                SendMessage.ChannelGroup(event.getGuild_id(), event.getChannel_id(), listCmd());
-            } else if (commandBody.startsWith(bindCommand)) {
-                if (formatMsg.length == 1) {
-                    SendMessage.ChannelGroup(event.getGuild_id(), event.getChannel_id(), "请输入有效的游戏名");
-                    return;
-                }
-
-                String bindPlayName = formatMsg[1];
-                List<String> msg = new ArrayList<>();
-
-
-                if (BotApi.SERVER.getPlayerList().getPlayerByName(bindPlayName) == null) {
-                    String m = BotApi.config.getCmd().getBindNotOnline();
-                    msg.add(m.replace("%Player%", bindPlayName));
-                    SendMessage.ChannelGroup(event.getGuild_id(), event.getChannel_id(), msg);
-                    return;
-                }
-
-                if (BindApi.addGuidBind(event.getTiny_id(), bindPlayName)) {
-                    String m = BotApi.config.getCmd().getBindSuccess();
-                    msg.add(m.replace("%Player%", bindPlayName));
-
-                } else {
-                    String m = BotApi.config.getCmd().getBindFail();
-                    msg.add(m.replace("%Player%", bindPlayName));
-                }
-
-                if (BotApi.config.getCommon().isDebuggable()) {
-                    BotApi.LOGGER.info("处理命令bind:" + msg + "PlayerName:" + bindPlayName);
-                }
-
-                SendMessage.ChannelGroup(event.getGuild_id(), event.getChannel_id(), msg);
-
-            }
         }
     }
-    public static void invokeCommand1(GroupMessageEvent event) {
+    public static void invokeCommand(GroupMessageEvent event) {
         String message = "";
         String bindCommand = BotApi.config.getCmd().getBindCommand();
-        String whiteListCommand = BotApi.config.getCmd().getWhiteListCommand();
+
 
         if (BotData.getBotFrame().equalsIgnoreCase("cqhttp")) {
             message = event.getMessage();
-            String[] formatMsg = message.split(" ");
-            String commandBody = formatMsg[0].substring(1);
+            invokeCommandMain(message, event);
 
-            if (CustomCmdHandler.getInstance().getCustomCmdMap().containsKey(commandBody)){
-                SendMessage.cmdResult(CustomCmdHandler.getInstance().getCustomCmdByAlies(commandBody), event);
-            }
+        }else if (BotData.getBotFrame().equalsIgnoreCase("mirai")) {
+            message = event.getMiraiMessage().get(1).getMessage();
+            invokeCommandMain(message, event);
         }
 
     }
 
-    public static void invokeCommand(GroupMessageEvent event) {
+    private static void invokeCommandMain(String message, GroupMessageEvent event){
+        String[] formatMsg = message.split(" ");
+        String commandBody = formatMsg[0].substring(1);
+
+        if (!event.getRole().equals("MEMBER") || !event.getRole().equals("member")) {
+            CustomCmdHandler.getInstance().getCustomCmds().stream()
+                    .filter(customCmd -> customCmd.getRequirePermission() == 1 && customCmd.getCmdAlies().equals(commandBody))
+                    .forEach(customCmd -> SendMessage.GroupCmd(customCmd, event));
+        }
+        CustomCmdHandler.getInstance().getCustomCmds().stream()
+                .filter(customCmd -> customCmd.getRequirePermission() == 0 && customCmd.getCmdAlies().equals(commandBody))
+                .forEach(customCmd -> SendMessage.GroupCmd(customCmd, event));
+
+    }
+
+    public static void invokeCommandOld(GroupMessageEvent event) {
         String message = "";
         String bindCommand = BotApi.config.getCmd().getBindCommand();
         String whiteListCommand = BotApi.config.getCmd().getWhiteListCommand();

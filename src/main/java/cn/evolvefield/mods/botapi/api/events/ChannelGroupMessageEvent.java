@@ -10,6 +10,7 @@ import net.minecraftforge.eventbus.api.Event;
  * Version: 1.0
  */
 public class ChannelGroupMessageEvent extends Event {
+
     private String guild_id;//频道号
     private String channel_id;//子频道号
     private String tiny_id;//发送人id
@@ -17,6 +18,9 @@ public class ChannelGroupMessageEvent extends Event {
     private String nickname;//发送人昵称
     private String json;//消息原始文本
     private String self_tiny_id;//机器人qq
+
+    private String role_id;//所在权限组ID
+
     private String message_id;//收到消息ID
     private String message;//收到消息
     private String sub_type;//消息子类型

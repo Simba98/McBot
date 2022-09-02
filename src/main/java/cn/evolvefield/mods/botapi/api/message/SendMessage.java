@@ -4,10 +4,10 @@ package cn.evolvefield.mods.botapi.api.message;
 import cn.evolvefield.mods.botapi.BotApi;
 import cn.evolvefield.mods.botapi.api.cmd.CustomCmd;
 import cn.evolvefield.mods.botapi.api.cmd.CustomCmdRun;
+import cn.evolvefield.mods.botapi.api.events.ChannelGroupMessageEvent;
 import cn.evolvefield.mods.botapi.api.events.GroupMessageEvent;
 import cn.evolvefield.mods.botapi.core.bot.BotData;
 import cn.evolvefield.mods.botapi.core.service.WebSocketService;
-import cn.evolvefield.mods.botapi.util.JsonsObject;
 import cn.evolvefield.mods.botapi.util.MsgUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -180,18 +179,27 @@ public class SendMessage {
 
     }
 
-    public static void cmdResult(CustomCmd customCmd, GroupMessageEvent event){
-        var custom = new CustomCmdRun(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, BotApi.SERVER.overworld(), 4,
-                "Bot", Component.literal("Bot"), BotApi.SERVER, null);
-        StringBuilder result = new StringBuilder();
 
-        for (String s : custom.outPut) {
+
+    private static StringBuilder CmdMain(CustomCmd customCmd){
+        StringBuilder result = new StringBuilder();
+        BotApi.SERVER.getCommands().performCommand(CustomCmdRun.CUSTOM, customCmd.getCmdContent());
+
+        for (String s : CustomCmdRun.CUSTOM.outPut) {
             result.append(s.replaceAll("§\\S", "")).append("\n");
         }
-        custom.outPut.clear();
-        BotApi.SERVER.getCommands().performCommand(custom, customCmd.getCmdContent());
-        SendMessage.Group(event.getGroupId(), result.toString());
+        CustomCmdRun.CUSTOM.outPut.clear();
+        return result;
     }
 
+    public static void GroupCmd(CustomCmd customCmd, GroupMessageEvent event) {
+        SendMessage.Group(event.getGroupId(), CmdMain(customCmd).toString());
+    }
+
+    public static void ChannelCmd(CustomCmd customCmd, ChannelGroupMessageEvent event) {
+        CompletableFuture.runAsync(() -> {
+            SendMessage.ChannelGroup(event.getGuild_id(), event.getChannel_id(), CmdMain(customCmd).toString());
+        });
+    }
 
 }

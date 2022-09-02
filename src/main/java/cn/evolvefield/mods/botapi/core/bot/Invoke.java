@@ -6,6 +6,7 @@ import cn.evolvefield.mods.botapi.api.data.BindApi;
 import cn.evolvefield.mods.botapi.api.events.ChannelGroupMessageEvent;
 import cn.evolvefield.mods.botapi.api.events.GroupMessageEvent;
 import cn.evolvefield.mods.botapi.api.message.SendMessage;
+import cn.evolvefield.mods.botapi.init.handler.CustomCmdHandler;
 import com.google.common.collect.Lists;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
@@ -75,6 +76,23 @@ public class Invoke {
             }
         }
     }
+    public static void invokeCommand1(GroupMessageEvent event) {
+        String message = "";
+        String bindCommand = BotApi.config.getCmd().getBindCommand();
+        String whiteListCommand = BotApi.config.getCmd().getWhiteListCommand();
+
+        if (BotData.getBotFrame().equalsIgnoreCase("cqhttp")) {
+            message = event.getMessage();
+            String[] formatMsg = message.split(" ");
+            String commandBody = formatMsg[0].substring(1);
+
+            if (CustomCmdHandler.getInstance().getCustomCmdMap().containsKey(commandBody)){
+                SendMessage.cmdResult(CustomCmdHandler.getInstance().getCustomCmdByAlies(commandBody), event);
+            }
+        }
+
+    }
+
     public static void invokeCommand(GroupMessageEvent event) {
         String message = "";
         String bindCommand = BotApi.config.getCmd().getBindCommand();

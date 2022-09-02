@@ -1,7 +1,7 @@
-package cn.evolvefield.mods.botapi.common.command;
+package cn.evolvefield.mods.botapi.common.cmd;
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.common.config.ConfigManger;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import cn.evolvefield.mods.botapi.core.bot.BotData;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -27,7 +27,7 @@ public class GuildIDCommand {
         BotApi.config.getCommon().setGuildOn(true);
         BotApi.config.getCommon().setGuildId(id);
         BotData.setGuildId(id);
-        ConfigManger.saveBotConfig(BotApi.config);
+        ConfigHandler.saveBotConfig(BotApi.config);
         context.getSource().sendSuccess(
                 Component.literal("已设置互通的频道号为:" + id), true);
         return 0;

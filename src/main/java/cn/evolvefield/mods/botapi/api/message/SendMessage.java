@@ -2,23 +2,35 @@ package cn.evolvefield.mods.botapi.api.message;
 
 
 import cn.evolvefield.mods.botapi.BotApi;
+import cn.evolvefield.mods.botapi.api.cmd.CustomCmd;
+import cn.evolvefield.mods.botapi.api.cmd.CustomCmdRun;
+import cn.evolvefield.mods.botapi.api.events.GroupMessageEvent;
 import cn.evolvefield.mods.botapi.core.bot.BotData;
 import cn.evolvefield.mods.botapi.core.service.WebSocketService;
 import cn.evolvefield.mods.botapi.util.JsonsObject;
 import cn.evolvefield.mods.botapi.util.MsgUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 public class SendMessage {
 
     public static void ChannelGroup(String guild_id, String channel_id, String message) {
-        if (BotApi.config.getCommon().isEnable()) {
-            JsonObject data = new JsonObject();
-            JsonObject params = new JsonObject();
-            if (BotApi.config.getCommon().getFrame().equalsIgnoreCase("cqhttp") && BotApi.config.getCommon().isGuildOn()) {
+        if (BotApi.config.getCommon().isEnable()
+                && BotApi.config.getCommon().getFrame().equalsIgnoreCase("cqhttp")
+                && BotApi.config.getCommon().isGuildOn()) {
+            CompletableFuture.runAsync(() -> {
+                //异步，防止同时发送群消息和频道消息时出现卡顿
+                JsonObject data = new JsonObject();
+                JsonObject params = new JsonObject();
                 data.addProperty("action", "send_guild_channel_msg");
                 params.addProperty("guild_id", guild_id);
                 params.addProperty("channel_id", channel_id);
@@ -29,15 +41,20 @@ public class SendMessage {
                     BotApi.LOGGER.info("向频道：" + guild_id + "的子频道：" + channel_id + "发送消息" + message);
                 }
 
-            }
+            });
+
+
         }
     }
 
     public static void ChannelGroup(String guild_id, String channel_id, List<String> message) {
-        if (BotApi.config.getCommon().isEnable()) {
-            JsonObject data = new JsonObject();
-            JsonObject params = new JsonObject();
-            if (BotApi.config.getCommon().getFrame().equalsIgnoreCase("cqhttp") && BotApi.config.getCommon().isGuildOn()) {
+        if (BotApi.config.getCommon().isEnable()
+                && BotApi.config.getCommon().getFrame().equalsIgnoreCase("cqhttp")
+                && BotApi.config.getCommon().isGuildOn()) {
+            CompletableFuture.runAsync(() -> {
+
+                JsonObject data = new JsonObject();
+                JsonObject params = new JsonObject();
                 data.addProperty("action", "send_guild_channel_msg");
                 params.addProperty("guild_id", guild_id);
                 params.addProperty("channel_id", channel_id);
@@ -48,7 +65,7 @@ public class SendMessage {
                     BotApi.LOGGER.info("向频道：" + guild_id + "的子频道：" + channel_id + "发送消息" + message);
                 }
 
-            }
+            });
         }
     }
 
@@ -163,22 +180,18 @@ public class SendMessage {
 
     }
 
-    //获取用户名信息
-    public static String getUsernameFromInfo(JsonsObject userInfo) {
-        if (userInfo == null) {
-            return "";
-        }
+    public static void cmdResult(CustomCmd customCmd, GroupMessageEvent event){
+        var custom = new CustomCmdRun(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, BotApi.SERVER.overworld(), 4,
+                "Bot", Component.literal("Bot"), BotApi.SERVER, null);
+        StringBuilder result = new StringBuilder();
 
-        if (userInfo.optNumber("retcode").intValue() != 0) {
-            return "";
+        for (String s : custom.outPut) {
+            result.append(s.replaceAll("§\\S", "")).append("\n");
         }
-
-        String username = userInfo.optJSONObject("data").get("card").getAsString();
-        if (username.equals("")) {
-            username = userInfo.optJSONObject("data").get("nickname").getAsString();
-        }
-
-        return username;
+        custom.outPut.clear();
+        BotApi.SERVER.getCommands().performCommand(custom, customCmd.getCmdContent());
+        SendMessage.Group(event.getGroupId(), result.toString());
     }
+
 
 }

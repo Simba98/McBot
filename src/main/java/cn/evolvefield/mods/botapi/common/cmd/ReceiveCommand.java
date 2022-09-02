@@ -1,7 +1,7 @@
-package cn.evolvefield.mods.botapi.common.command;
+package cn.evolvefield.mods.botapi.common.cmd;
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.common.config.ConfigManger;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -30,7 +30,7 @@ public class ReceiveCommand {
     public static int allExecute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         boolean isEnabled = context.getArgument("enabled", Boolean.class);
         BotApi.config.getStatus().setRECEIVE_ENABLED(isEnabled);
-        ConfigManger.saveBotConfig(BotApi.config);
+        ConfigHandler.saveBotConfig(BotApi.config);
         if (isEnabled) {
             context.getSource().sendSuccess(
                     Component.literal("全局接收群消息开关已被设置为打开"), true);
@@ -46,11 +46,11 @@ public class ReceiveCommand {
         BotApi.config.getStatus().setR_CHAT_ENABLE(isEnabled);
         if (isEnabled) {
             BotApi.config.getStatus().setRECEIVE_ENABLED(true);
-            ConfigManger.saveBotConfig(BotApi.config);
+            ConfigHandler.saveBotConfig(BotApi.config);
             context.getSource().sendSuccess(
                     Component.literal("接收群内聊天消息开关已被设置为打开"), true);
         } else {
-            ConfigManger.saveBotConfig(BotApi.config);
+            ConfigHandler.saveBotConfig(BotApi.config);
             context.getSource().sendSuccess(
                     Component.literal("接收群内聊天消息开关已被设置为关闭"), true);
         }
@@ -63,11 +63,11 @@ public class ReceiveCommand {
         BotApi.config.getStatus().setR_COMMAND_ENABLED(isEnabled);
         if (isEnabled) {
             BotApi.config.getStatus().setRECEIVE_ENABLED(true);
-            ConfigManger.saveBotConfig(BotApi.config);
+            ConfigHandler.saveBotConfig(BotApi.config);
             context.getSource().sendSuccess(
                     Component.literal("接收群内命令消息开关已被设置为打开"), true);
         } else {
-            ConfigManger.saveBotConfig(BotApi.config);
+            ConfigHandler.saveBotConfig(BotApi.config);
             context.getSource().sendSuccess(
                     Component.literal("接收群内命令消息开关已被设置为关闭"), true);
         }

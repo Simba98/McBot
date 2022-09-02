@@ -1,6 +1,7 @@
-package cn.evolvefield.mods.botapi.common.config;
+package cn.evolvefield.mods.botapi.init.handler;
 
 import cn.evolvefield.mods.botapi.BotApi;
+import cn.evolvefield.mods.botapi.common.config.BotConfig;
 import cn.evolvefield.mods.botapi.util.JSONFormat;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
@@ -11,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 
-public class ConfigManger {
+public class ConfigHandler {
     private static final Gson GSON = new Gson();
 
     public static BotConfig initBotConfig() {

@@ -1,8 +1,8 @@
-package cn.evolvefield.mods.botapi.common.command;
+package cn.evolvefield.mods.botapi.common.cmd;
 
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.common.config.ConfigManger;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import cn.evolvefield.mods.botapi.core.service.WebSocketService;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -25,7 +25,7 @@ public class DisconnectCommand {
             context.getSource().sendSuccess(Component.literal("WebSocket目前未连接"), true);
         }
         BotApi.config.getCommon().setEnable(false);
-        ConfigManger.saveBotConfig(BotApi.config);
+        ConfigHandler.saveBotConfig(BotApi.config);
         return 0;
     }
 }

@@ -1,4 +1,4 @@
-package cn.evolvefield.mods.botapi.common.command;
+package cn.evolvefield.mods.botapi.common.cmd;
 
 
 import cn.evolvefield.mods.botapi.BotApi;

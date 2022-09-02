@@ -1,8 +1,8 @@
-package cn.evolvefield.mods.botapi.common.command;
+package cn.evolvefield.mods.botapi.common.cmd;
 
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.common.config.ConfigManger;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import cn.evolvefield.mods.botapi.core.bot.BotData;
 import cn.evolvefield.mods.botapi.core.service.WebSocketService;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -48,7 +48,7 @@ public class ConnectCommand {
             WebSocketService.main(BotData.getWs());
             BotApi.config.getStatus().setRECEIVE_ENABLED(true);
             BotApi.config.getCommon().setEnable(true);
-            ConfigManger.saveBotConfig(BotApi.config);
+            ConfigHandler.saveBotConfig(BotApi.config);
 
             return 1;
 
@@ -72,7 +72,7 @@ public class ConnectCommand {
             WebSocketService.main(BotData.getWs() + "/all?verifyKey=" + BotData.getVerifyKey() + "&qq=" + BotData.getQQId());
             BotApi.config.getStatus().setRECEIVE_ENABLED(true);
             BotApi.config.getCommon().setEnable(true);
-            ConfigManger.saveBotConfig(BotApi.config);
+            ConfigHandler.saveBotConfig(BotApi.config);
 
             return 1;
 
@@ -88,7 +88,7 @@ public class ConnectCommand {
         WebSocketService.main(BotApi.config.getCommon().getWsCommon());
         BotApi.config.getStatus().setRECEIVE_ENABLED(true);
         BotApi.config.getCommon().setEnable(true);
-        ConfigManger.saveBotConfig(BotApi.config);
+        ConfigHandler.saveBotConfig(BotApi.config);
         return 1;
 
     }
@@ -100,7 +100,7 @@ public class ConnectCommand {
         WebSocketService.main(BotApi.config.getMirai().getWsMirai() + "/all?verifyKey=" + BotData.getVerifyKey() + "&qq=" + BotData.getQQId());
         BotApi.config.getStatus().setRECEIVE_ENABLED(true);
         BotApi.config.getCommon().setEnable(true);
-        ConfigManger.saveBotConfig(BotApi.config);
+        ConfigHandler.saveBotConfig(BotApi.config);
 
         return 1;
 

@@ -1,7 +1,7 @@
-package cn.evolvefield.mods.botapi.common.command;
+package cn.evolvefield.mods.botapi.common.cmd;
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.common.config.ConfigManger;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -29,7 +29,7 @@ public class AddChannelIDCommand {
         } else {
             BotApi.config.getCommon().addChannelId(id);
         }
-        ConfigManger.saveBotConfig(BotApi.config);
+        ConfigHandler.saveBotConfig(BotApi.config);
         return 0;
     }
 

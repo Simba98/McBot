@@ -1,7 +1,7 @@
-package cn.evolvefield.mods.botapi.common.command;
+package cn.evolvefield.mods.botapi.common.cmd;
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.common.config.ConfigManger;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import cn.evolvefield.mods.botapi.core.bot.BotData;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -22,7 +22,7 @@ public class BotIDCommand {
         long id = context.getArgument("BotId", Long.class);
         BotApi.config.getCommon().setBotId(id);
         BotData.setQQId(id);
-        ConfigManger.saveBotConfig(BotApi.config);
+        ConfigHandler.saveBotConfig(BotApi.config);
         context.getSource().sendSuccess(
                 Component.literal("已设置机器人QQ号为:" + id), true);
         return 0;

@@ -2,10 +2,11 @@ package cn.evolvefield.mods.botapi;
 
 import cn.evolvefield.mods.botapi.api.data.BindData;
 import cn.evolvefield.mods.botapi.common.config.BotConfig;
-import cn.evolvefield.mods.botapi.common.config.ConfigManger;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import cn.evolvefield.mods.botapi.core.bot.BotHandler;
 import cn.evolvefield.mods.botapi.core.service.MySqlService;
 import cn.evolvefield.mods.botapi.core.service.WebSocketService;
+import cn.evolvefield.mods.botapi.init.handler.CustomCmdHandler;
 import cn.evolvefield.mods.botapi.util.FileUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,10 +25,9 @@ import org.apache.logging.log4j.Logger;
 import java.nio.file.Path;
 import java.sql.Connection;
 
-@Mod(BotApi.MODID)
+@Mod(Static.MODID)
 public class BotApi {
 
-    public static final String MODID = "botapi";
     public static final Logger LOGGER = LogManager.getLogger();
     public static MinecraftServer SERVER = ServerLifecycleHooks.getCurrentServer();
     public static Path CONFIG_FOLDER ;
@@ -57,7 +57,9 @@ public class BotApi {
     @SubscribeEvent
     public void onServerStarted(ServerStartedEvent event) {
         //加载配置
-        config = ConfigManger.initBotConfig();
+        config = ConfigHandler.initBotConfig();
+        //自定义命令加载
+        CustomCmdHandler.getInstance().loadSingularities();
         //绑定数据加载
         BindData.init();
         //连接框架与数据库
@@ -74,7 +76,8 @@ public class BotApi {
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
-        ConfigManger.saveBotConfig(config);
+        ConfigHandler.saveBotConfig(config);
+        CustomCmdHandler.getInstance().clear();
         BindData.save();
         if (WebSocketService.client != null) {
             WebSocketService.client.close();

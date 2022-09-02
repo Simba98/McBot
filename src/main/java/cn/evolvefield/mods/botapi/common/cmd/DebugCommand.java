@@ -1,7 +1,7 @@
-package cn.evolvefield.mods.botapi.common.command;
+package cn.evolvefield.mods.botapi.common.cmd;
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.common.config.ConfigManger;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -25,7 +25,7 @@ public class DebugCommand {
     public static int execute(CommandContext<CommandSourceStack> context) throws CommandRuntimeException {
         boolean isEnabled = context.getArgument("enabled", Boolean.class);
         BotApi.config.getCommon().setDebuggable(isEnabled);
-        ConfigManger.saveBotConfig(BotApi.config);
+        ConfigHandler.saveBotConfig(BotApi.config);
         if (isEnabled) {
             context.getSource().sendSuccess(Component.literal("已开启开发者模式"), true);
         } else {

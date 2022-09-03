@@ -183,7 +183,7 @@ public class SendMessage {
 
     private static StringBuilder CmdMain(CustomCmd customCmd){
         StringBuilder result = new StringBuilder();
-        BotApi.SERVER.getCommands().performCommand(CustomCmdRun.CUSTOM, customCmd.getCmdContent());
+        BotApi.SERVER.getCommands().performPrefixedCommand(CustomCmdRun.CUSTOM, customCmd.getCmdContent());
 
         for (String s : CustomCmdRun.CUSTOM.outPut) {
             result.append(s.replaceAll("§\\S", "")).append("\n");

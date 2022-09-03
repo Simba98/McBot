@@ -18,11 +18,11 @@ public class TickEventHandler {
     }
 
     @SubscribeEvent
-    public static void onTickEvent(TickEvent.WorldTickEvent event) {
+    public static void onTickEvent(TickEvent.LevelTickEvent event) {
         String toSend = toSendQueue.poll();
-        if (!event.world.isClientSide && toSend != null) {
+        if (!event.level.isClientSide && toSend != null) {
             Component textComponents = Component.literal(toSend);
-            Objects.requireNonNull(event.world.getServer()).getPlayerList().broadcastSystemMessage(textComponents, ChatType.SYSTEM);
+            Objects.requireNonNull(event.level.getServer()).getPlayerList().broadcastSystemMessage(textComponents, true);
         }
     }
 }

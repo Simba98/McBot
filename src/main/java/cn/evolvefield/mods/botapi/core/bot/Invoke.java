@@ -2,6 +2,7 @@ package cn.evolvefield.mods.botapi.core.bot;
 
 
 import cn.evolvefield.mods.botapi.BotApi;
+import cn.evolvefield.mods.botapi.api.cmd.CustomCmdRun;
 import cn.evolvefield.mods.botapi.api.data.BindApi;
 import cn.evolvefield.mods.botapi.api.events.ChannelGroupMessageEvent;
 import cn.evolvefield.mods.botapi.api.events.GroupMessageEvent;
@@ -153,8 +154,7 @@ public class Invoke {
             switch (subCmd) {
                 case "add" -> {
                     String playerName = formatMsg[2];
-                    int success = BotApi.SERVER.getCommands().performCommand(new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, BotApi.SERVER.overworld(), 4, "",
-                            Component.literal(""), Objects.requireNonNull(BotApi.SERVER), null), "whitelist add " + playerName);
+                    int success = BotApi.SERVER.getCommands().performPrefixedCommand(CustomCmdRun.CUSTOM, "whitelist add " + playerName);
 
                     if (success == 0) {
                         SendMessage.Group(BotApi.config.getCommon().getGroupId(), "添加" + playerName + "至白名单失败或已经添加了白名单！");
@@ -168,8 +168,7 @@ public class Invoke {
                 }
                 case "del" -> {
                     String playerName = formatMsg[2];
-                    int success = BotApi.SERVER.getCommands().performCommand(new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, BotApi.SERVER.overworld(), 4, "",
-                            Component.literal(""), Objects.requireNonNull(BotApi.SERVER), null), "whitelist remove " + playerName);
+                    int success = BotApi.SERVER.getCommands().performPrefixedCommand(CustomCmdRun.CUSTOM, "whitelist remove " + playerName);
 
                     if (success == 0) {
                         SendMessage.Group(BotApi.config.getCommon().getGroupId(), "从白名单移除" + playerName + "失败或已经从白名单移除！");

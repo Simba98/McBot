@@ -1,6 +1,12 @@
 package cn.evolvefield.mods.botapi.service;
 
 
+import cn.evolvefield.mods.botapi.core.Bot;
+import cn.evolvefield.mods.botapi.core.BotContainer;
+import cn.evolvefield.mods.botapi.core.BotFactory;
+import cn.evolvefield.mods.botapi.handler.ActionHandler;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.java_websocket.server.WebSocketServer;
 import org.slf4j.Logger;
@@ -21,16 +27,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ServerEndpoint("/botapi/ws")//地址为 ws://127.0.0.1/botapi/ws
 public class WebSocketService{
+    private final static String API_RESULT_KEY = "echo";
+
+    private static final String FAILED_STATUS = "failed";
+
+    private static final String RESULT_STATUS_KEY = "status";
     private final static Logger log = LoggerFactory.getLogger(WebSocketService.class);
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
-    //使用map对象优化,线程安全，便于根据QQid来获取对应的WebSocket
-    private static ConcurrentHashMap<Long, WebSocketService> websocketMap = new ConcurrentHashMap<>();
-    //接收客户端QQ的id，指定需要推送的客户端
-    private long id;
+    //机器人容器，储存着所有客户端
+    private BotContainer botContainer;
+    private BotFactory botFactory;
 
+    private final ActionHandler actionHandler;
     @OnOpen
     public void onOpen(Session session) {
         try {
@@ -40,7 +51,7 @@ public class WebSocketService{
                 session.close();
                 return;
             }
-            websocketMap.put(id, this); //加入map中
+            botContainer.robots.put(xSelfId, botFactory.createBot(xSelfId, session));
             addOnlineCount();           //在线数加1
             log.info("账户 {} 连接, 当前已连接的客户端数量为 {}", xSelfId, getOnlineCount());
         } catch (IOException e) {
@@ -54,12 +65,14 @@ public class WebSocketService{
      * 连接关闭调用的方法
      */
     @OnClose
-    public void onClose() {
-        if(websocketMap.get(this.id) != null){
-            websocketMap.remove(this.id);
-            subOnlineCount();
-            log.info("有连接关闭！当前已连接客户端数量为" + getOnlineCount());
+    public void onClose(Session session) {
+        long xSelfId = parseSelfId(session);
+        if (xSelfId == 0L) {
+            return;
         }
+        botContainer.robots.remove(xSelfId);
+        log.warn("账户 {} 断开连接", xSelfId);
+
     }
 
     /**
@@ -68,16 +81,21 @@ public class WebSocketService{
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        log.info("收到来自客户端" + id + "的信息:"+message);
-        if(StringUtils.isNotBlank(message)){
-            for(WebSocketService server : websocketMap.values()) {
-                try {
-                    server.sendMessage(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    continue;
-                }
+        long xSelfId = parseSelfId(session);
+        Bot bot = botContainer.robots.get(xSelfId);
+        if (bot == null) {
+            bot = botFactory.createBot(xSelfId, session);
+            botContainer.robots.put(xSelfId, bot);
+        }
+        bot.setSession(session);
+        JSONObject result = JSON.parseObject(message);
+        log.debug("[Event] {}", result.toJSONString());
+        // if resp contains echo field, this resp is action resp, else event resp.
+        if (result.containsKey(API_RESULT_KEY)) {
+            if (FAILED_STATUS.equals(result.get(RESULT_STATUS_KEY))) {
+                log.error("Request failed: {}", result.get("wording"));
             }
+            actionHandler.onReceiveActionResp(result);
         }
     }
 

@@ -52,7 +52,7 @@ public class ActionHandler {
             return null;
         }
         JSONObject reqJson = generateReqJson(action, params);
-        ActionSendUtils actionSendUtils = new ActionSendUtils(session, webSocketProperties.getRequestTimeout());
+        ActionSendUtils actionSendUtils = new ActionSendUtils(session, 3000L);
         apiCallbackMap.put(reqJson.getString("echo"), actionSendUtils);
         JSONObject result;
         try {

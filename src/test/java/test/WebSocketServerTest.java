@@ -21,7 +21,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class WebSocketServerTest {
     public static void main(String[] args) throws Exception {
         LinkedBlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
-        //ActionHandler actionHandler = new ActionHandler();
         Connection service = ConnectFactory.createWebsocketClient(new BotConfig("ws://127.0.0.1:8080", null, false),blockingQueue);
         EventDispatchers dispatchers = new EventDispatchers(blockingQueue);//创建事件分发器
         GroupMessageListener groupMessageListener = new GroupMessageListener();

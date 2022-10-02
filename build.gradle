@@ -16,10 +16,10 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'cn.evolvefield.mods'
-version = '1.19.2-1.9.0'
+version = '1.19.2-2.0.0'
 
 java {
-    archivesBaseName = 'botapi'
+    archivesBaseName = 'Bot-Connect-forge'
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
@@ -132,7 +132,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.24'
+    implementation fg.deobf(group: 'org.projectlombok', name: 'lombok', version: '1.18.24')
+    jarJar fg.deobf(group: 'org.projectlombok', name: 'lombok', version: '1.18.24')
+    implementation fg.deobf(group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.3')
+    jarJar fg.deobf(group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.3')
     //implementation 'org.java-websocket:Java-WebSocket:1.5.3'
     //implementation 'javax.websocket:javax.websocket-api:1.1'
     //compileOnly 'cn.evolvefield.mods.botapi.util.fastjson:fastjson2:2.0.13.graal'
@@ -177,4 +180,12 @@ jar.finalizedBy('reobfJar')
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+jarJar{
+    enable()
+    dependencies {
+        include(dependency(group: 'org.projectlombok', name: 'lombok', version: '1.18.24'))
+        include(dependency(group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.3'))
+    }
 }

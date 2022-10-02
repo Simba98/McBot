@@ -1,13 +1,13 @@
 package cn.evolvefield.mods.botapi.sdk.connection;
 
+import cn.evolvefield.mods.botapi.BotApi;
 import cn.evolvefield.mods.botapi.sdk.core.Bot;
 import cn.evolvefield.mods.botapi.sdk.handler.ActionHandler;
 import cn.evolvefield.mods.botapi.sdk.util.ReschedulableTimerTask;
 import cn.evolvefield.mods.botapi.sdk.util.json.util.JsonsObject;
-import cn.evolvefield.mods.botapi.sdk.util.websocket.client.WebSocketClient;
-import cn.evolvefield.mods.botapi.sdk.util.websocket.enums.ReadyState;
-import cn.evolvefield.mods.botapi.sdk.util.websocket.handshake.ServerHandshake;
 import com.google.gson.JsonObject;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,9 +127,9 @@ public class ModWebSocketClient extends WebSocketClient implements Connection {
     public void onClose(int i, String s, boolean b) {
         result = null;
         sendFlag = 0;
-        if (!reconnect) {
+        if (!reconnect || BotApi.SERVER.isStopped()) {
             // 调用close 方法
-            close(i, s);
+            this.close(i, s);
         } else {
             if (!isReconnecting) {
                 restartReconnectionTimer();

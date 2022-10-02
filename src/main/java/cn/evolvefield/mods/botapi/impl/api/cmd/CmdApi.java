@@ -51,26 +51,29 @@ public class CmdApi {
     public static void invokeCommandGuild(GuildMessageEvent event){
         String[] formatMsg = event.getMessage().split(" ");
         String commandBody = formatMsg[0].substring(1);
-        AtomicBoolean roleInfoList = new AtomicBoolean(false);
+        AtomicBoolean isAdmin = new AtomicBoolean(false);
         BotApi.bot.getGuildMemberProfile(event.getGuildId(), event.getSender().getTinyId())
                .getData()
                .getRoles()
                .stream()
                .filter(roleInfo -> {
-                   if (Integer.parseInt(roleInfo.getRoleId()) >= 2)
-                        roleInfoList.set(true);
+                   if (Integer.parseInt(roleInfo.getRoleId()) >= 2 || "机器人管理员".equals(roleInfo.getRoleName()))
+                        isAdmin.set(true);
                    return false;
                });
 
 
-        if (roleInfoList.get()) {
+        if (isAdmin.get()) {
             CustomCmdHandler.getInstance().getCustomCmds().stream()
                     .filter(customCmd -> customCmd.getRequirePermission() == 1 && customCmd.getCmdAlies().equals(commandBody))
                     .forEach(customCmd -> GuildCmd(BotApi.bot, customCmd, event));
         }
-        CustomCmdHandler.getInstance().getCustomCmds().stream()
-                .filter(customCmd -> customCmd.getRequirePermission() == 0 && customCmd.getCmdAlies().equals(commandBody))
-                .forEach(customCmd -> GuildCmd(BotApi.bot, customCmd, event));
+        else {
+            CustomCmdHandler.getInstance().getCustomCmds().stream()
+                    .filter(customCmd -> customCmd.getRequirePermission() == 0 && customCmd.getCmdAlies().equals(commandBody))
+                    .forEach(customCmd -> GuildCmd(BotApi.bot, customCmd, event));
+        }
+
 
     }
 }

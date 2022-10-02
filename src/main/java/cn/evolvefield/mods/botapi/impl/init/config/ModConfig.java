@@ -85,8 +85,6 @@ public class ModConfig {
 
     @Data
     public static class Common {
-        @SerializedName("frame")
-        private String frame = "cqhttp";//go-cqhttp///mirai
         @SerializedName("group_on")
         private boolean groupOn = true;
         @SerializedName("group_id_list")
@@ -101,10 +99,6 @@ public class ModConfig {
         private long botId = 0;
         @SerializedName("master_id")
         private long masterId = 0;
-        @SerializedName("ws_common")
-        private String wsCommon = "ws://127.0.0.1:8080";
-        @SerializedName("ws_Key")
-        private String wsKey = "";
         @SerializedName("enable")
         private boolean enable = true;
         @SerializedName("debuggable")

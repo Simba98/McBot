@@ -22,7 +22,7 @@ public class ConnectFactory {
      */
     public static ModWebSocketClient createWebsocketClient(BotConfig config, BlockingQueue<String> queue) throws Exception {
         StringBuilder builder = new StringBuilder();
-        if (config.getMirai()){
+        if (config.getMiraiHttp()){
             builder.append(config.getUrl());
             builder.append("/all");
             builder.append("?verifyKey=");

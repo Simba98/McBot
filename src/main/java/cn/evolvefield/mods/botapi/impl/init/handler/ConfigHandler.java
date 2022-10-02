@@ -14,7 +14,7 @@ import java.nio.file.Path;
 
 
 public class ConfigHandler {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new Gson();
 
     public static ModConfig load() {
         ModConfig config = new ModConfig();

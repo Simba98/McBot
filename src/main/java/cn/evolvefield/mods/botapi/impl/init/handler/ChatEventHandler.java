@@ -13,10 +13,10 @@ public class ChatEventHandler {
         if (BotApi.config.getStatus().isS_CHAT_ENABLE() && BotApi.config.getStatus().isSEND_ENABLED()) {
             if (BotApi.config.getCommon().isGuildOn() && !BotApi.config.getCommon().getChannelIdList().isEmpty()) {
                 for (String id : BotApi.config.getCommon().getChannelIdList())
-                    BotApi.bot.sendGuildMsg(BotApi.config.getCommon().getGuildId(), id, String.format("[" + BotApi.config.getCmd().getQqPrefix() + "]<%s> %s", event.getUsername(), event.getMessage()));
+                    BotApi.bot.sendGuildMsg(BotApi.config.getCommon().getGuildId(), id, String.format("[" + BotApi.config.getCmd().getQqPrefix() + "]<%s> %s", event.getUsername(), event.getMessage().getString()));
             } else {
                 for (long id : BotApi.config.getCommon().getGroupIdList())
-                    BotApi.bot.sendGroupMsg(id, String.format("[" + BotApi.config.getCmd().getQqPrefix() + "]<%s> %s", event.getUsername(), event.getMessage()), true);
+                    BotApi.bot.sendGroupMsg(id, String.format("[" + BotApi.config.getCmd().getQqPrefix() + "]<%s> %s", event.getUsername(), event.getMessage().getString()), true);
             }
         }
     }

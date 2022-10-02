@@ -108,7 +108,7 @@ public class ModWebSocketClient extends WebSocketClient implements Connection {
         if (message != null && !jsonObject.has(HEART_BEAT) && !jsonObject.has(LIFE_CYCLE)) {//过滤心跳
             result = message;
             sendFlag = 0;
-            log.debug(jsonObject.toString());
+            log.debug("接收到原始消息{}", jsonObject.toString());
             if (jsonObject.has(API_RESULT_KEY)) {
                 if (FAILED_STATUS.equals(jsonObject.get(RESULT_STATUS_KEY).getAsString())) {
                     log.error("请求失败: {}", jsonObject.get("wording").getAsString());

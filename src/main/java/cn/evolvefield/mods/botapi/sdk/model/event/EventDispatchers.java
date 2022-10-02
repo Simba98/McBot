@@ -90,8 +90,7 @@ public class EventDispatchers implements Runnable{
         if (this.messageListener != null){
             this.messageListener.onMessage(message);
         }
-        log.debug("接收到上报消息：{}", messageType);
-        log.debug("接收到上报消息内容：{}", message);
+        log.debug("接收到上报消息内容：{} \n {}", messageType, messageType);
         Event bean = GsonUtil.strToJavaBean(message, messageType);//将消息反序列化为对象
         List<Listener> executeListener = (executeListener = cache.get(messageType)) == null ?
                 getMethod(messageType) : executeListener;//检查缓存

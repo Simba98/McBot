@@ -6,6 +6,7 @@ import cn.evolvefield.mods.botapi.sdk.core.Bot;
 import cn.evolvefield.mods.botapi.sdk.model.event.message.GroupMessageEvent;
 import cn.evolvefield.mods.botapi.sdk.model.event.message.GuildMessageEvent;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -49,6 +50,7 @@ public class CmdApi {
     }
 
     public static void invokeCommandGuild(GuildMessageEvent event){
+        String[] adminList = {"频道主", "管理员", "机器人管理员"};
         String[] formatMsg = event.getMessage().split(" ");
         String commandBody = formatMsg[0].substring(1);
         AtomicBoolean isAdmin = new AtomicBoolean(false);
@@ -57,7 +59,7 @@ public class CmdApi {
                .getRoles()
                .stream()
                .filter(roleInfo -> {
-                   if (Integer.parseInt(roleInfo.getRoleId()) >= 2 || "机器人管理员".equals(roleInfo.getRoleName()))
+                   if (Integer.parseInt(roleInfo.getRoleId()) >= 2 || Arrays.stream(adminList).anyMatch(s -> s.equals(roleInfo.getRoleName())))
                         isAdmin.set(true);
                    return false;
                });

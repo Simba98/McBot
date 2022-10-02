@@ -1,6 +1,7 @@
 package cn.evolvefield.mods.botapi;
 
 import cn.evolvefield.mods.botapi.impl.init.config.ModConfig;
+import cn.evolvefield.mods.botapi.impl.init.handler.BotEventHandler;
 import cn.evolvefield.mods.botapi.impl.init.handler.ConfigHandler;
 import cn.evolvefield.mods.botapi.impl.init.handler.CustomCmdHandler;
 import cn.evolvefield.mods.botapi.sdk.connection.ConnectFactory;
@@ -23,7 +24,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import java.nio.file.Path;
 import java.util.concurrent.LinkedBlockingQueue;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(Static.MODID)
 public class BotApi {
 
@@ -33,7 +33,6 @@ public class BotApi {
     public static ModWebSocketClient service;
     public static EventDispatchers dispatchers;
     public static Bot bot;
-
     public static ModConfig config ;
 
     public BotApi() {
@@ -61,6 +60,7 @@ public class BotApi {
         bot = service.createBot();//创建机器人实例
         dispatchers = new EventDispatchers(blockingQueue);//创建事件分发器
         CustomCmdHandler.getInstance().load();//自定义命令加载
+        BotEventHandler.init(dispatchers);//事件监听
 
     }
 

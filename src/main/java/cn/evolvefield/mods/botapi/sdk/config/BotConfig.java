@@ -26,5 +26,11 @@ public class BotConfig {
     @Expose
     private Boolean mirai = false;//是否开启mirai
 
+    public BotConfig(String url){
+        this(url, "", 0, false, false);
+    }
 
+    public BotConfig(String url, long botId){
+        this(url, "", botId, false, true);
+    }
 }

@@ -1,14 +1,25 @@
 package cn.evolvefield.mods.botapi.sdk.config;
 
+import com.google.gson.annotations.Expose;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * Description:
  * Author: cnlimiter
  * Date: 2022/10/1 17:05
  * Version: 1.0
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BotConfig {
+    @Expose
     private String url;//websocket地址
+    @Expose
     private String token;//token鉴权
+    @Expose
     private Boolean isAccessToken;//是否开启鉴权
 
     public BotConfig(String url) {
@@ -17,37 +28,6 @@ public class BotConfig {
 
     public BotConfig(String url, String token) {
         this(url, token, false);
-    }
-
-
-    public BotConfig(String url, String token, Boolean isAccessToken) {
-        this.url = url;
-        this.token = token;
-        this.isAccessToken = isAccessToken;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Boolean getIsAccessToken() {
-        return isAccessToken;
-    }
-
-    public void setIsAccessToken(Boolean isAccessToken) {
-        this.isAccessToken = isAccessToken;
     }
 
 }

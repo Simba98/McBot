@@ -12,22 +12,19 @@ import lombok.NoArgsConstructor;
  * Version: 1.0
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class BotConfig {
     @Expose
-    private String url;//websocket地址
+    private String url = "ws://127.0.0.1:8080";//websocket地址
     @Expose
-    private String token;//token鉴权
+    private String token = "";//token或者verifyKey鉴权
     @Expose
-    private Boolean isAccessToken;//是否开启鉴权
+    private long botId = 0;
+    @Expose
+    private Boolean isAccessToken = false;//是否开启鉴权
+    @Expose
+    private Boolean mirai = false;//是否开启mirai
 
-    public BotConfig(String url) {
-        this(url, null);
-    }
-
-    public BotConfig(String url, String token) {
-        this(url, token, false);
-    }
 
 }

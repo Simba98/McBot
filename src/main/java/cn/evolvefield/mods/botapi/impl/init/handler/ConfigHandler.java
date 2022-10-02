@@ -1,9 +1,10 @@
 package cn.evolvefield.mods.botapi.impl.init.handler;
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.common.config.BotConfig;
-import cn.evolvefield.mods.botapi.util.JSONFormat;
+import cn.evolvefield.mods.botapi.impl.init.config.ModConfig;
+import cn.evolvefield.mods.botapi.sdk.util.json.util.JSONFormat;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
@@ -13,10 +14,10 @@ import java.nio.file.Path;
 
 
 public class ConfigHandler {
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    public static BotConfig initBotConfig() {
-        BotConfig config = new BotConfig();
+    public static ModConfig load() {
+        ModConfig config = new ModConfig();
 
         if (!BotApi.CONFIG_FOLDER.toFile().isDirectory()) {
             try {
@@ -30,7 +31,7 @@ public class ConfigHandler {
         if (configPath.toFile().isFile()) {
             try {
                 config = GSON.fromJson(FileUtils.readFileToString(configPath.toFile(), StandardCharsets.UTF_8),
-                        BotConfig.class);
+                        ModConfig.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -45,7 +46,7 @@ public class ConfigHandler {
         return config;
     }
 
-    public static void saveBotConfig(BotConfig config) {
+    public static void save(ModConfig config) {
         if (!BotApi.CONFIG_FOLDER.toFile().isDirectory()) {
             try {
                 Files.createDirectories(BotApi.CONFIG_FOLDER);

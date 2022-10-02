@@ -1,9 +1,7 @@
 package cn.evolvefield.mods.botapi.impl.init.handler;
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.sdk.listener.Handler;
 import cn.evolvefield.mods.botapi.sdk.listener.SimpleListener;
-import cn.evolvefield.mods.botapi.sdk.listener.impl.GroupMessageListener;
 import cn.evolvefield.mods.botapi.sdk.model.event.EventDispatchers;
 import cn.evolvefield.mods.botapi.sdk.model.event.message.GroupMessageEvent;
 
@@ -14,7 +12,13 @@ import cn.evolvefield.mods.botapi.sdk.model.event.message.GroupMessageEvent;
  * Version: 1.0
  */
 public class BotEventHandler {
-    public static void handlerQQChat(EventDispatchers dispatchers){
+    public static void init(EventDispatchers dispatchers){
+        handlerQQChat(dispatchers);
+
+        dispatchers.start(10);//线程组处理任务
+    }
+
+    private static void handlerQQChat(EventDispatchers dispatchers){
         dispatchers.addListener(new SimpleListener<GroupMessageEvent>() {
             @Override
             public void onMessage(GroupMessageEvent event) {

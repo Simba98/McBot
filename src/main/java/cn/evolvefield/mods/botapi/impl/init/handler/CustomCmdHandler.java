@@ -55,7 +55,7 @@ public class CustomCmdHandler {
     public void load() {
         var stopwatch = Stopwatch.createStarted();
 
-        this.writeDefaultCustomCmdFiles();
+        this.writeDefault();
 
         clear();
 
@@ -68,7 +68,7 @@ public class CustomCmdHandler {
         Static.LOGGER.info("Loaded {} custom cmd(s) in {} ms", this.customCmdMap.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS));
     }
 
-    public void writeDefaultCustomCmdFiles() {
+    public void writeDefault() {
         if (!dir.exists() && dir.mkdirs()) {
             var json = new JsonObject();
             json.addProperty("alies", "list");

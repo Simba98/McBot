@@ -19,12 +19,13 @@ public class ModConfig {
         return "botapi";
     }
 
-
+    @SerializedName("common")
+    private Common common = new Common();
     @SerializedName("status")
     private Status status = new Status();
     @SerializedName("cmd")
     private Cmd cmd = new Cmd();
-    @SerializedName("cmd")
+    @SerializedName("bot_config")
     private BotConfig botConfig = new BotConfig();
     @Data
     public static class Status {

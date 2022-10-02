@@ -24,7 +24,7 @@ public class BotConfig {
     @Expose
     private Boolean isAccessToken = false;//是否开启鉴权
     @Expose
-    private Boolean mirai = false;//是否开启mirai
+    private Boolean miraiHttp = false;//是否开启mirai-http,否则请使用onebot-mirai
 
     public BotConfig(String url){
         this(url, "", 0, false, false);

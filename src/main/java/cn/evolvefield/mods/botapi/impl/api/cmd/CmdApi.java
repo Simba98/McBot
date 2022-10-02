@@ -52,7 +52,7 @@ public class CmdApi {
         String[] formatMsg = event.getMessage().split(" ");
         String commandBody = formatMsg[0].substring(1);
         AtomicBoolean roleInfoList = new AtomicBoolean(false);
-        BotApi.bot.getGuildMemberProfile(event.getGuildId(), String.valueOf(event.getSender().getUserId()))
+        BotApi.bot.getGuildMemberProfile(event.getGuildId(), event.getSender().getTinyId())
                .getData()
                .getRoles()
                .stream()

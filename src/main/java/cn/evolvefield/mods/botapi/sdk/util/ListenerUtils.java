@@ -28,6 +28,7 @@ public class ListenerUtils {
         JsonsObject object = new JsonsObject(jsonObject);
         String postType = object.optString("post_type");
         if ("message".equals(postType)) {
+            type = "wholeMessage";
             //消息类型
             String messageType = object.optString("message_type");
             if ("group".equals(messageType)) {
@@ -36,6 +37,8 @@ public class ListenerUtils {
             } else if ("private".equals(messageType)) {
                 //私聊消息类型
                 type = "privateMessage";
+            } else if ("guild".equals(messageType)){
+                type = "guildMessage";
             }
         } else if ("request".equals(postType)) {
             //请求类型

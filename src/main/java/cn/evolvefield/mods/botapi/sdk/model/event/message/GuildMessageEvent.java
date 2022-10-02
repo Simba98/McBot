@@ -22,9 +22,6 @@ public class GuildMessageEvent extends MessageEvent {
     @SerializedName( "message_id")
     private String messageId;
 
-    @SerializedName( "post_type")
-    private String postType;
-
     @SerializedName( "sub_type")
     private String subType;
 
@@ -36,9 +33,6 @@ public class GuildMessageEvent extends MessageEvent {
 
     @SerializedName( "self_tiny_id")
     private String selfTinyId;
-
-    @SerializedName( "time")
-    private long time;
 
     @SerializedName( "sender")
     private Sender sender;

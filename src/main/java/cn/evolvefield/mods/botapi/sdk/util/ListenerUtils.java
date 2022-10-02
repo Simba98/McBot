@@ -38,6 +38,7 @@ public class ListenerUtils {
                 //私聊消息类型
                 type = "privateMessage";
             } else if ("guild".equals(messageType)){
+                //频道消息，暂不支持私信
                 type = "guildMessage";
             }
         } else if ("request".equals(postType)) {

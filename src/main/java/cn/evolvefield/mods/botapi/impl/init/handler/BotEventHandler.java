@@ -31,6 +31,7 @@ public class BotEventHandler {
             @Override
             public void onMessage(GroupMessageEvent event) {
                 if (BotApi.config.getCommon().getGroupIdList().contains(event.getGroupId())
+                        && !event.getMessage().startsWith(BotApi.config.getCmd().getCommandStart())
                         && BotApi.config.getStatus().isRECEIVE_ENABLED()
                         && !event.getMessage().contains("[CQ:")
                         && BotApi.config.getStatus().isR_CHAT_ENABLE()
@@ -87,6 +88,7 @@ public class BotEventHandler {
             public void onMessage(GuildMessageEvent event) {
                 if (event.getGuildId().equals(BotApi.config.getCommon().getGuildId())
                         && BotApi.config.getCommon().getChannelIdList().contains(event.getChannelId())
+                        && !event.getMessage().startsWith(BotApi.config.getCmd().getCommandStart())
                 ){
                     if (!event.getMessage().contains("[CQ:") && BotApi.config.getStatus().isR_CHAT_ENABLE()
                     ) {

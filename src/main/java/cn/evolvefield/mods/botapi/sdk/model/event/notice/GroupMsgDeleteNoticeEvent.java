@@ -22,9 +22,6 @@ public class GroupMsgDeleteNoticeEvent extends NoticeEvent {
     @SerializedName( "group_id")
     private long groupId;
 
-    @SerializedName( "user_id")
-    private long userId;
-
     @SerializedName( "operator_id")
     private long operatorId;
 

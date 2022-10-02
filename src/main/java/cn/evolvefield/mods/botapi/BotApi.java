@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -65,7 +66,7 @@ public class BotApi {
     }
 
     @SubscribeEvent
-    public void onServerStopping(ServerStoppingEvent event){
+    public void onServerStopped(ServerStoppedEvent event){
         dispatchers.stop();
         CustomCmdHandler.getInstance().clear();
         ConfigHandler.save(config);

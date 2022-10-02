@@ -27,7 +27,7 @@ public class GuildMemberProfileResp {
     private List<RoleInfo> roles;
 
     @Data
-    private static class RoleInfo {
+    public static class RoleInfo {
 
         @SerializedName( "role_id")
         private String roleId;

@@ -14,6 +14,6 @@ public class GroupCmdListener extends DefaultHandlerListener<GroupMessageEvent> 
     @Override
     public void onMessage(GroupMessageEvent event) {
         //处理逻辑
-        CmdApi.invokeCommandMain(event);
+        CmdApi.invokeCommandGroup(event);
     }
 }

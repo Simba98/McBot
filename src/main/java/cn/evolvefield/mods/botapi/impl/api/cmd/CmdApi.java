@@ -4,6 +4,9 @@ import cn.evolvefield.mods.botapi.BotApi;
 import cn.evolvefield.mods.botapi.impl.init.handler.CustomCmdHandler;
 import cn.evolvefield.mods.botapi.sdk.core.Bot;
 import cn.evolvefield.mods.botapi.sdk.model.event.message.GroupMessageEvent;
+import cn.evolvefield.mods.botapi.sdk.model.event.message.GuildMessageEvent;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Description:
@@ -26,9 +29,11 @@ public class CmdApi {
     public static void GroupCmd(Bot bot, CustomCmd customCmd, GroupMessageEvent event) {
         bot.sendGroupMsg(event.getGroupId(), CmdMain(customCmd).toString(), true);
     }
+    public static void GuildCmd(Bot bot, CustomCmd customCmd, GuildMessageEvent event) {
+        bot.sendGuildMsg(event.getGuildId(), event.getChannelId(), CmdMain(customCmd).toString());
+    }
 
-
-    public static void invokeCommandMain(GroupMessageEvent event){
+    public static void invokeCommandGroup(GroupMessageEvent event){
         String[] formatMsg = event.getMessage().split(" ");
         String commandBody = formatMsg[0].substring(1);
 
@@ -40,6 +45,32 @@ public class CmdApi {
         CustomCmdHandler.getInstance().getCustomCmds().stream()
                 .filter(customCmd -> customCmd.getRequirePermission() == 0 && customCmd.getCmdAlies().equals(commandBody))
                 .forEach(customCmd -> GroupCmd(BotApi.bot, customCmd, event));
+
+    }
+
+    public static void invokeCommandGuild(GuildMessageEvent event){
+        String[] formatMsg = event.getMessage().split(" ");
+        String commandBody = formatMsg[0].substring(1);
+        AtomicBoolean roleInfoList = new AtomicBoolean(false);
+        BotApi.bot.getGuildMemberProfile(event.getGuildId(), String.valueOf(event.getSender().getUserId()))
+               .getData()
+               .getRoles()
+               .stream()
+               .filter(roleInfo -> {
+                   if (Integer.parseInt(roleInfo.getRoleId()) >= 2)
+                        roleInfoList.set(true);
+                   return false;
+               });
+
+
+        if (roleInfoList.get()) {
+            CustomCmdHandler.getInstance().getCustomCmds().stream()
+                    .filter(customCmd -> customCmd.getRequirePermission() == 1 && customCmd.getCmdAlies().equals(commandBody))
+                    .forEach(customCmd -> GuildCmd(BotApi.bot, customCmd, event));
+        }
+        CustomCmdHandler.getInstance().getCustomCmds().stream()
+                .filter(customCmd -> customCmd.getRequirePermission() == 0 && customCmd.getCmdAlies().equals(commandBody))
+                .forEach(customCmd -> GuildCmd(BotApi.bot, customCmd, event));
 
     }
 }

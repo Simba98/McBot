@@ -1,20 +1,24 @@
 package cn.evolvefield.mods.botapi;
 
-import cn.evolvefield.mods.botapi.impl.init.config.ModConfig;
-import cn.evolvefield.mods.botapi.impl.init.handler.BotEventHandler;
-import cn.evolvefield.mods.botapi.impl.init.handler.ConfigHandler;
-import cn.evolvefield.mods.botapi.impl.init.handler.CustomCmdHandler;
+import cn.evolvefield.mods.botapi.init.config.ModConfig;
+import cn.evolvefield.mods.botapi.init.handler.BotEventHandler;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
+import cn.evolvefield.mods.botapi.init.handler.CustomCmdHandler;
 import cn.evolvefield.mods.botapi.sdk.connection.ConnectFactory;
 import cn.evolvefield.mods.botapi.sdk.connection.ModWebSocketClient;
 import cn.evolvefield.mods.botapi.sdk.core.Bot;
 import cn.evolvefield.mods.botapi.sdk.model.event.EventDispatchers;
 import cn.evolvefield.mods.botapi.sdk.util.FileUtils;
+import cn.evolvefield.onebot.sdk.connection.ConnectFactory;
+import cn.evolvefield.onebot.sdk.connection.ModWebSocketClient;
+import cn.evolvefield.onebot.sdk.core.Bot;
+import cn.evolvefield.onebot.sdk.model.event.EventDispatchers;
+import cn.evolvefield.onebot.sdk.util.FileUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -30,7 +34,7 @@ public class BotApi {
 
     public static MinecraftServer SERVER = ServerLifecycleHooks.getCurrentServer();
     public static Path CONFIG_FOLDER ;
-    private static LinkedBlockingQueue<String> blockingQueue;
+    public static LinkedBlockingQueue<String> blockingQueue;
     public static ModWebSocketClient service;
     public static EventDispatchers dispatchers;
     public static Bot bot;

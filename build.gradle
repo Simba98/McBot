@@ -130,6 +130,7 @@ repositories {
 
 dependencies {
     implementation "cn.evolvefield.bot:OneBot-SDK:${project.sdk_version}"
+    jarJar "cn.evolvefield.bot:OneBot-SDK:[0.1.4,1.0.0)"
     minecraft 'net.minecraftforge:forge:1.19.2-43.1.25'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     annotationProcessor "cn.evolvefield.bot:OneBot-SDK:${project.sdk_version}"
@@ -160,7 +161,7 @@ tasks.withType(JavaCompile).configureEach {
 jarJar{
     enable()
     dependencies {
-        include(dependency("cn.evolvefield.bot:OneBot-SDK:${project.sdk_version}"))
+        include(dependency(group: 'cn.evolvefield.bot', name: 'OneBot-SDK', version: '0.1.4'))
     }
 }
 

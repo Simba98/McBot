@@ -1,8 +1,8 @@
 package cn.evolvefield.mods.botapi.api.listener;
 
 import cn.evolvefield.mods.botapi.api.cmd.CmdApi;
-import cn.evolvefield.mods.botapi.sdk.listener.DefaultHandlerListener;
-import cn.evolvefield.mods.botapi.sdk.model.event.message.GroupMessageEvent;
+import cn.evolvefield.onebot.sdk.listener.DefaultHandlerListener;
+import cn.evolvefield.onebot.sdk.model.event.message.GroupMessageEvent;
 
 /**
  * Description:

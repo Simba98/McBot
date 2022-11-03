@@ -1,5 +1,6 @@
 package cn.evolvefield.mods.botapi.init.handler;
 
+import cn.evolvefield.mods.botapi.BotApi;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,7 +20,10 @@ public class TickEventHandler {
     @SubscribeEvent
     public static void onTickEvent(TickEvent.LevelTickEvent event) {
         String toSend = toSendQueue.poll();
-        if (!event.level.isClientSide && toSend != null) {
+        if (BotApi.config != null
+                && !event.level.isClientSide
+                && toSend != null
+        ) {
             Component textComponents = Component.literal(toSend);
             Objects.requireNonNull(event.level.getServer()).getPlayerList().broadcastSystemMessage(textComponents, true);
         }

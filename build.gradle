@@ -132,6 +132,8 @@ dependencies {
     implementation "cn.evolvefield.bot:OneBot-SDK:${project.sdk_version}"
     minecraft 'net.minecraftforge:forge:1.19.2-43.1.25'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor "cn.evolvefield.bot:OneBot-SDK:${project.sdk_version}"
+
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
@@ -158,7 +160,7 @@ tasks.withType(JavaCompile).configureEach {
 jarJar{
     enable()
     dependencies {
-        include(dependency("cn.evolvefield:onebot-sdk:${project.sdk_version}"))
+        include(dependency("cn.evolvefield.bot:OneBot-SDK:${project.sdk_version}"))
     }
 }
 
@@ -166,7 +168,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-
+            jarJar.component(it)
             version = "${project.mod_version}"
             artifactId = "${project.archives_base_name}"
             groupId = "${project.maven_group}"

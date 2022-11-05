@@ -195,13 +195,17 @@ publishing {
         }
     }
     repositories {
-        maven {
-            name = "release"
-            url = 'https://maven.nova-committee.cn/releases'
-            credentials {
-                username = "${rep_username}"
-                password = "${rep_password}"
+        if (System.getenv('MAVEN_USERNAME') != null && System.getenv('MAVEN_PASSWORD') != null) {
+            maven {
+                name 'release'
+                url = 'https://maven.nova-committee.cn/releases'
+
+                credentials {
+                    username System.getenv('MAVEN_USERNAME')
+                    password System.getenv('MAVEN_PASSWORD')
+                }
             }
         }
     }
 }
+

@@ -39,7 +39,7 @@ public class HelpCmd {
                         *************************************
                         感谢您的支持，如有问题请联系我
                         QQ群：720975019找群主
-                        Github： 
+                        Github：
                         """;
 
         var url = "https://github.com/Nova-Committee/Bot-Connect/issues/new";

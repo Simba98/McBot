@@ -1,11 +1,13 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "cn.evolvefield.mods.botapi.mixin",
+  "package": "cn.evolvefield.mods.botapi.init.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "PlayerEventMixin",
-    "PlayerManagerMixin"
+    "PlayerAdvancementsMixin",
+    "PlayerListMixin",
+    "ServerGamePacketListenerImplMixin",
+    "ServerPlayerMixin"
   ],
   "client": [
   ],

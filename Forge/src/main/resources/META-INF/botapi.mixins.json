@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "cn.evolvefield.mods.botapi.init.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "atomlib.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

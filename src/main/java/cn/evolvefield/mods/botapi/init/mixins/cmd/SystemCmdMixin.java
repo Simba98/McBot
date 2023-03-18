@@ -23,10 +23,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class SystemCmdMixin {
     private static void say_register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register((Commands.literal("say").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))).then(Commands.argument("message", MessageArgument.message()).executes((commandContext) -> {
-            MessageArgument.resolveChatMessage(commandContext, "message", (playerChatMessage) -> {
-                CommandSourceStack commandSourceStack = commandContext.getSource();
-                PlayerList playerList = commandSourceStack.getServer().getPlayerList();
-                /////////////////////////
+            MessageArgument.ChatMessage chatMessage = MessageArgument.getChatMessage(commandContext, "message");
+            CommandSourceStack commandSourceStack = commandContext.getSource();
+            PlayerList playerList = commandSourceStack.getServer().getPlayerList();
+            chatMessage.resolve(commandSourceStack, (playerChatMessage) -> {
+
                 if (FabricLoader.getInstance().isModLoaded("botapi")
                         && ConfigHandler.cached() != null
                         && ConfigHandler.cached().getStatus().isS_CHAT_ENABLE()
@@ -36,17 +37,18 @@ public class SystemCmdMixin {
                         for (String id : ConfigHandler.cached().getCommon().getChannelIdList())
                             BotApi.bot.sendGuildMsg(ConfigHandler.cached().getCommon().getGuildId(),
                                     id,
-                                    String.format("[" + ConfigHandler.cached().getCmd().getMcSystemPrefix() + "] %s", playerChatMessage.decoratedContent().getString()));
+                                    String.format("[" + ConfigHandler.cached().getCmd().getMcSystemPrefix() + "] %s", playerChatMessage.serverContent().getString()));
                     } else {
                         for (long id : ConfigHandler.cached().getCommon().getGroupIdList())
                             BotApi.bot.sendGroupMsg(id,
-                                    String.format("[" + ConfigHandler.cached().getCmd().getMcSystemPrefix() + "] %s", playerChatMessage.decoratedContent().getString()),
+                                    String.format("[" + ConfigHandler.cached().getCmd().getMcSystemPrefix() + "] %s", playerChatMessage.serverContent().getString()),
                                     true);
                     }
                 }
-                /////////////////////////
                 playerList.broadcastChatMessage(playerChatMessage, commandSourceStack, ChatType.bind(ChatType.SAY_COMMAND, commandSourceStack));
             });
+
+
             return 1;
         })));
     }

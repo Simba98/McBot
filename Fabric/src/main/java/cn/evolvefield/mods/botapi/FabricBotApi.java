@@ -1,7 +1,7 @@
 package cn.evolvefield.mods.botapi;
 
-import cn.evolvefield.mods.botapi.connect.ConnectionFactory;
-import cn.evolvefield.mods.botapi.connect.WSServer;
+import cn.evolvefield.mods.botapi.web.connect.ConnectionFactory;
+import cn.evolvefield.mods.botapi.web.connect.WSServer;
 import cn.evolvefield.mods.botapi.handler.ConfigHandler;
 import cn.evolvefield.mods.botapi.handler.KoishiHandler;
 import net.fabricmc.api.ModInitializer;

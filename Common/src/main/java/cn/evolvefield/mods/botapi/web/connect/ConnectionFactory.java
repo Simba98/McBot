@@ -1,7 +1,6 @@
-package cn.evolvefield.mods.botapi.connect;
+package cn.evolvefield.mods.botapi.web.connect;
 
 import cn.evolvefield.mods.botapi.config.BotConfig;
-import org.java_websocket.WebSocket;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

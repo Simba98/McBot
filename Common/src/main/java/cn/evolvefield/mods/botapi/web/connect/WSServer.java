@@ -1,4 +1,4 @@
-package cn.evolvefield.mods.botapi.connect;
+package cn.evolvefield.mods.botapi.web.connect;
 
 import cn.evolvefield.mods.botapi.config.BotConfig;
 import cn.evolvefield.mods.botapi.util.JsonsObject;
@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -22,6 +24,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class WSServer extends WebSocketServer {
 
     private final Logger log = LoggerFactory.getLogger("BotServer");
+    protected final ExecutorService eventExecutor;
+
     private final BlockingQueue<String> send;
     private final BlockingQueue<String> receive;
 
@@ -29,6 +33,8 @@ public class WSServer extends WebSocketServer {
         super(new InetSocketAddress(config.getHost(), config.getPort()));
         this.send = send;
         this.receive =  new LinkedBlockingQueue<>();
+        this.eventExecutor = Executors.newSingleThreadExecutor(r -> new Thread(r, "Event Executor"));
+
     }
 
 
@@ -70,8 +76,10 @@ public class WSServer extends WebSocketServer {
         setConnectionLostTimeout(1000);
     }
 
-
-    public BlockingQueue<String> getReceive() {
-        return receive;
+    public void shutdown(){
+        eventExecutor.shutdown();
+        this.stop();
     }
+
+
 }

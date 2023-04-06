@@ -1,0 +1,38 @@
+{
+    "schemaVersion": 1,
+    "id": "botapi",
+    "version": "${version}",
+
+    "name": "Example Mod",
+    "description": "Pop!",
+    "authors": [
+      "cnlimiter"
+    ],
+    "contact": {
+      "homepage": "https://fabricmc.net/",
+      "sources": "https://github.com/FabricMC/fabric-example-mod"
+    },
+
+    "license": "CC0-1.0",
+    "icon": "assets/modid/icon.png",
+
+    "environment": "*",
+    "entrypoints": {
+      "main": [
+        "cn.evolvefield.mods.botapi.FabricBotApi"
+      ]
+    },
+    "mixins": [
+      "botapi.mixins.json"
+    ],
+
+    "depends": {
+      "fabricloader": ">=0.14",
+      "fabric": "*",
+      "minecraft": "1.19.3",
+      "java": ">=17"
+    },
+    "suggests": {
+      "another-mod": "*"
+    }
+  }

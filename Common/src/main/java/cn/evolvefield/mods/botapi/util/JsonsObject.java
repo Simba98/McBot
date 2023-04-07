@@ -95,6 +95,15 @@ public class JsonsObject {
         return val.intValue();
     }
 
+
+    public boolean optBool(String key) {
+        return this.optBool(key, false);
+    }
+
+    public boolean optBool(String key, boolean defaultValue){
+        return this.jsonObject.has(key) ? jsonObject.get(key).getAsBoolean() : defaultValue;
+    }
+
     public JsonObject optJSONObject(String key){
         return this.jsonObject.has(key) ? jsonObject.get(key).getAsJsonObject() : null;
     }

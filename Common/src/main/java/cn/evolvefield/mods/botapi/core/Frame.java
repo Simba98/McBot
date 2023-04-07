@@ -16,7 +16,7 @@ public class Frame {
 
     public Frame(String msg) {
         JsonsObject raw = new JsonsObject(msg);
-        this.type = MessageType.valueOf(raw.optString("type"));
+        this.type = MessageType.valueOf(raw.optString("type").toUpperCase());
         this.data = raw.optJSONSObject("data");
     }
 

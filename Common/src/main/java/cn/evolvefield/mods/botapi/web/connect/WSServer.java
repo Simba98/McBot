@@ -1,7 +1,12 @@
 package cn.evolvefield.mods.botapi.web.connect;
 
+import blue.endless.jankson.Jankson;
 import cn.evolvefield.mods.botapi.config.BotConfig;
-import cn.evolvefield.mods.botapi.util.JsonsObject;
+import cn.evolvefield.mods.botapi.core.action.Request;
+import cn.evolvefield.mods.botapi.handler.EventHandler;
+import cn.evolvefield.mods.botapi.util.GsonUtil;
+import com.google.gson.reflect.TypeToken;
+import net.minecraft.server.MinecraftServer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -11,9 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Project: MultiLoader
@@ -24,17 +26,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class WSServer extends WebSocketServer {
 
     private final Logger log = LoggerFactory.getLogger("BotServer");
-    protected final ExecutorService eventExecutor;
 
     private final BlockingQueue<String> send;
-    private final BlockingQueue<String> receive;
 
-    public WSServer(BotConfig config, BlockingQueue<String> send){
+    private final MinecraftServer server;
+    private final Jankson jankson = Jankson.builder().build();
+
+    public WSServer(BotConfig config, BlockingQueue<String> send, MinecraftServer server){
         super(new InetSocketAddress(config.getHost(), config.getPort()));
         this.send = send;
-        this.receive =  new LinkedBlockingQueue<>();
-        this.eventExecutor = Executors.newSingleThreadExecutor(r -> new Thread(r, "Event Executor"));
-
+        this.server = server;
     }
 
 
@@ -50,10 +51,8 @@ public class WSServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         send.forEach(conn::send);
-        JsonsObject json = new JsonsObject(message);
-        receive.add(message);
-        log.info(message);
-
+        var event = new EventHandler(server, conn, jankson.fromJson(message, Request.class));
+        event.run();
 
 
 
@@ -73,13 +72,9 @@ public class WSServer extends WebSocketServer {
     @Override
     public void onStart() {
         log.info("------------------等待连接-------------------");
-        setConnectionLostTimeout(1000);
+        //setConnectionLostTimeout(1000);
     }
 
-    public void shutdown(){
-        eventExecutor.shutdown();
-        this.stop();
-    }
 
 
 }

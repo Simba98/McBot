@@ -1,6 +1,7 @@
 package cn.evolvefield.mods.botapi.web.connect;
 
 import cn.evolvefield.mods.botapi.config.BotConfig;
+import net.minecraft.server.MinecraftServer;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -19,10 +20,9 @@ public class ConnectionFactory {
 
 
 
-
-    public ConnectionFactory(BotConfig config){
+    public ConnectionFactory(BotConfig config, MinecraftServer server){
         send =  new LinkedBlockingQueue<>();
-        ws = new  WSServer(config, send);
+        ws = new  WSServer(config, send, server);
     }
 
 

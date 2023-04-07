@@ -34,7 +34,7 @@ public class FabricBotApi implements ModInitializer {
     }
 
     private void onServerStarted(MinecraftServer server) {
-        ws = new ConnectionFactory(ConfigHandler.cached()).ws;
+        ws = new ConnectionFactory(ConfigHandler.cached(), server).ws;
         ws.start();
         receive = new LinkedBlockingQueue<>();//使用队列接收从koishi来的数据
         fromKoishi = new KoishiHandler(receive);

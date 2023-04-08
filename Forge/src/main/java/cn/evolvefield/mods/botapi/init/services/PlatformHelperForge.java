@@ -1,0 +1,69 @@
+package cn.evolvefield.mods.botapi.init.services;
+
+import cn.evolvefield.mods.botapi.ModForge;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.gametest.ForgeGameTestHooks;
+import org.jetbrains.annotations.Nullable;
+
+import java.nio.file.Path;
+
+public class PlatformHelperForge implements IPlatformHelper {
+
+    @Override
+    public Path getGamePath() {
+
+        return FMLPaths.GAMEDIR.get();
+    }
+
+    @Override
+    public Path getConfigPath() {
+
+        return FMLPaths.CONFIGDIR.get();
+    }
+
+    @Override
+    public boolean isModLoaded(String modId) {
+
+        return ModList.get().isLoaded(modId);
+    }
+
+    @Override
+    public boolean isDevelopmentEnvironment() {
+
+        return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public PhysicalSide getPhysicalSide() {
+
+        return FMLEnvironment.dist.isClient() ? PhysicalSide.CLIENT : PhysicalSide.SERVER;
+    }
+
+    @Nullable
+    @Override
+    public String getModName(String modId) {
+
+        return ModList.get().getModContainerById(modId).map(mod -> mod.getModInfo().getDisplayName()).orElse(modId);
+    }
+
+    @Override
+    public boolean isTestingEnvironment() {
+
+        return ForgeGameTestHooks.isGametestEnabled();
+    }
+
+    @Override
+    public String getName() {
+        return "Forge";
+    }
+
+    @Override
+    public MinecraftServer getServer() {
+        return ModForge.SERVER;
+    }
+
+}

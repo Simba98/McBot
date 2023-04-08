@@ -14,8 +14,8 @@ public class DisconnectCommand {
 
     public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (BotApi.service != null) {
-            BotApi.service.close();
-            if (BotApi.service.isClosed()) {
+            BotApi.service.ws.disconnect();
+            if (BotApi.service.ws.isMissingCloseFrameAllowed()) {
                 context.getSource().sendSuccess(Component.literal("WebSocket已断开连接"), true);
             } else {
                 context.getSource().sendSuccess(Component.literal("WebSocket目前未连接"), true);

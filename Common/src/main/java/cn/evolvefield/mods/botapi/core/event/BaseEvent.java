@@ -8,7 +8,13 @@ package cn.evolvefield.mods.botapi.core.event;
  */
 public class BaseEvent {
 
-    String platform;
+    String id;
+
+    float time;
+
+    String type;
+
+    String detail_type;
 
 
 }

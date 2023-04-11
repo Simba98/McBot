@@ -22,77 +22,24 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 <p align="center">
     <a href="README_EN.md">English</a> | 
     <a href="长期支持版本">长期支持版本</a> |
-    <a href="快速开始">快速开始</a>
 </p>
 
 # 长期支持版本
 
-> Forge-1.19.3    
-> Fabric-1.19.3
+> Forge-1.19.4    
+> Fabric-1.19.4
 
-# 快速开始
 
-### 使用api进行请求
-
-```java
-public class TestCmd {
-    public static ArgumentBuilder<CommandSourceStack, ?> register() {
-        return Commands.literal("test")
-                .executes(TestCmd::execute);
-    }
-
-    public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        System.out.println(BotApi.bot.sendGroupMsg(337631140, MsgUtils.builder().text("1").build(), true));
-        //群里发送消息
-        return 0;
-    }
-}
-```
-
-### 事件监听示例
-
-```java
-public class WebSocketServerTest {
-    public static void main(String[] args) throws Exception {
-        LinkedBlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
-        Connection service = ConnectFactory.createWebsocketClient(new BotConfig("ws://127.0.0.1:8080", null, false), blockingQueue);
-        EventDispatchers dispatchers = new EventDispatchers(blockingQueue);//创建事件分发器
-        GroupMessageListener groupMessageListener = new GroupMessageListener();
-        groupMessageListener.addHandler("天气", new Handler<GroupMessageEvent>() {
-            @Override
-            public void handle(GroupMessageEvent groupMessage) {
-                System.out.println(groupMessage);
-
-            }
-        });
-        dispatchers.addListener(groupMessageListener);//加入监听
-        dispatchers.addListener(new SimpleListener<PrivateMessageEvent>() {//私聊监听
-            @Override
-            public void onMessage(PrivateMessageEvent privateMessage) {
-                System.out.println(privateMessage);
-            }
-        });
-
-        dispatchers.start(10);//线程组处理任务
-
-    }
-}
-```
 
 # 支持
 
 Bot-Connect 以 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs)
-标准协议进行开发，兼容所有支持正向WebSocket的OneBot协议客户端
+标准协议与客户端进行通信，兼容所有支持反向WebSocket的OneBot协议框架端
 
-| 项目地址 | 平台                                            | 核心作者 | 备注 |
-| --- |-----------------------------------------------| --- | --- |
-| [koishijs/koishi](https://github.com/koishijs/koishi) | [koishi](https://koishi.js.org/)              | shigma |  |
-| [onebot-walle/walle-q](https://github.com/onebot-walle/walle-q) |                                               | abrahum |  |
-| [Yiwen-Chan/OneBot-YaYa](https://github.com/Yiwen-Chan/OneBot-YaYa) | [先驱](https://www.xianqubot.com/)              | kanri |  |
-| [richardchien/coolq-http-api](https://github.com/richardchien/coolq-http-api) | CKYU                                          | richardchien | 可在 Mirai 平台使用 [mirai-native](https://github.com/iTXTech/mirai-native) 加载 |
-| [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp) | [MiraiGo](https://github.com/Mrs4s/MiraiGo)   | Mrs4s |  |
-| [yyuueexxiinngg/OneBot-Mirai](https://github.com/yyuueexxiinngg/onebot-kotlin) | [Mirai](https://github.com/mamoe/mirai)       | yyuueexxiinngg |  |
-| [takayama-lily/onebot](https://github.com/takayama-lily/onebot) | [OICQ](https://github.com/takayama-lily/oicq) | takayama |  |
+| 项目地址                                                    | 支持平台                      | 核心作者  | 备注 |
+|---------------------------------------------------------|--------------------------------|---------|-----|
+| [koishijs/koishi](https://github.com/koishijs/koishi)   | QQ/QQ频道/Telgrame/Discord/Kook | shigma  |     |
+| [nonebot/nonebot2](https://github.com/nonebot/nonebot2) | QQ/QQ频道/Telgrame/Discord/Kook | nonebot |     |
 
 # Credits
 

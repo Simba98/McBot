@@ -20,6 +20,9 @@ public class BotConfig {
     @SerializedName("port")
     @Comment("服务端端口")
     private int port = 6666;
+    @SerializedName("path")
+    @Comment("服务端路由")
+    private String path = "";
     @SerializedName("access_token")
     @Comment("密钥")
     private String access_token= "";

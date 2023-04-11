@@ -22,77 +22,23 @@ _✨ Based on [OneBot](https://github.com/howmanybots/onebot/blob/master/README.
 <p align="center">
     <a href="README.md">简体中文</a> |
     <a href="LTS">LTS</a> |
-    <a href="QuickStart">QuickStart</a>
 </p>
 
 # LTS
 
-> Forge-1.19.3  
-> Fabric-1.19.3
+> Forge-1.19.4  
+> Fabric-1.19.4
 
-# QuickStart
-
-### Use api to request
-
-```java
-public class TestCmd {
-    public static ArgumentBuilder<CommandSourceStack, ?> register() {
-        return Commands.literal("test")
-                .executes(TestCmd::execute);
-    }
-
-    public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        System.out.println(BotApi.bot.sendGroupMsg(337631140, MsgUtils.builder().text("1").build(), true));
-        //send messages to the group
-        return 0;
-    }
-}
-```
-
-### Event Listener Instance
-
-```java
-public class WebSocketServerTest {
-    public static void main(String[] args) throws Exception {
-        LinkedBlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();//use queues to transfer data
-        Connection service = ConnectFactory.createWebsocketClient(new BotConfig("ws://127.0.0.1:8080", null, false), blockingQueue);
-        EventDispatchers dispatchers = new EventDispatchers(blockingQueue);//create an event distributor
-        GroupMessageListener groupMessageListener = new GroupMessageListener();
-        groupMessageListener.addHandler("weather", new Handler<GroupMessageEvent>() {
-            @Override
-            public void handle(GroupMessageEvent groupMessage) {
-                System.out.println(groupMessage);
-
-            }
-        });
-        dispatchers.addListener(groupMessageListener);//add listener
-        dispatchers.addListener(new SimpleListener<PrivateMessageEvent>() {//private listener
-            @Override
-            public void onMessage(PrivateMessageEvent privateMessage) {
-                System.out.println(privateMessage);
-            }
-        });
-
-        dispatchers.start(10);//thread groups process tasks
-
-    }
-}
-```
 
 # Client
 
 Bot-Connect  [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs)
 developed with standard protocols, compatible with all One Bot protocol clients that support forward Web sockets
 
-| Project Address                                                                | Platform                                      | Authors        | Note                                                                      |
-|--------------------------------------------------------------------------------|-----------------------------------------------|----------------|---------------------------------------------------------------------------|
-| [koishijs/koishi](https://github.com/koishijs/koishi)                          | [koishi](https://koishi.js.org/)              | shigma         |                                                                           |
-| [onebot-walle/walle-q](https://github.com/onebot-walle/walle-q)                |                                               | abrahum        |                                                                           |
-| [Yiwen-Chan/OneBot-YaYa](https://github.com/Yiwen-Chan/OneBot-YaYa)            | [先驱](https://www.xianqubot.com/)              | kanri          |                                                                           |
-| [richardchien/coolq-http-api](https://github.com/richardchien/coolq-http-api)  | CKYU                                          | richardchien   | Can be used by [mirai-native](https://github.com/iTXTech/mirai-native)    |
-| [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp)                          | [MiraiGo](https://github.com/Mrs4s/MiraiGo)   | Mrs4s          |                                                                           |
-| [yyuueexxiinngg/OneBot-Mirai](https://github.com/yyuueexxiinngg/onebot-kotlin) | [Mirai](https://github.com/mamoe/mirai)       | yyuueexxiinngg |                                                                           |
-| [takayama-lily/onebot](https://github.com/takayama-lily/onebot)                | [OICQ](https://github.com/takayama-lily/oicq) | takayama       |                                                                           |
+| Project Address                                                                | Platform                         | Authors        | Note                                                                      |
+|--------------------------------------------------------------------------------|----------------------------------|----------------|---------------------------------------------------------------------------|
+| [koishijs/koishi](https://github.com/koishijs/koishi)   | QQ/QQGuild/Telgrame/Discord/Kook | shigma  |     |
+| [nonebot/nonebot2](https://github.com/nonebot/nonebot2) | QQ/QQGuild/Telgrame/Discord/Kook | nonebot |     |
 
 # Credits
 

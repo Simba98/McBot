@@ -1,4 +1,4 @@
-package cn.evolvefield.mods.botapi.core.dto;
+package cn.evolvefield.mods.botapi.core.entity;
 
 
 import cn.evolvefield.mods.botapi.core.action.Response;

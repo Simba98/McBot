@@ -2,16 +2,16 @@ package cn.evolvefield.mods.botapi.handler;
 
 import cn.evolvefield.mods.botapi.core.action.Request;
 import cn.evolvefield.mods.botapi.core.action.Response;
-import cn.evolvefield.mods.botapi.core.dto.ActionSuccess;
+import cn.evolvefield.mods.botapi.core.entity.ActionSuccess;
+import cn.evolvefield.mods.botapi.core.entity.UserMessage;
+import cn.evolvefield.mods.botapi.init.ModCommon;
 import cn.evolvefield.mods.botapi.util.CQUtil;
 import cn.evolvefield.mods.botapi.util.JsonsObject;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import org.java_websocket.WebSocket;
 
 import java.util.concurrent.Executors;
 
@@ -24,25 +24,22 @@ import java.util.concurrent.Executors;
 public class EventHandler {
 
     private final MinecraftServer server;
-    private final WebSocket socket;
     private final Request request;
 
 
-    public EventHandler(MinecraftServer server, WebSocket socket, Request request){
-        this.server = server;
-        this.socket = socket;
+    public EventHandler(MinecraftServer server, Request request){
         this.request = request;
-
+        this.server = server;
     }
 
 
 
     public void run(){
-        callBack(excute());
+        callBack(execute());
     }
 
 
-    private ListenableFuture<Response<?>> excute(){
+    private ListenableFuture<Response<?>> execute(){
         return MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(4))
                 .submit(() -> {
                     var data = new Response<>();
@@ -75,10 +72,9 @@ public class EventHandler {
                             }
 
                             msg = CQUtil.replace(msg, image_on);
+                            var toSend = new UserMessage(platform, from_id, nickname, msg);
 
-                            String toSend = String.format("§b[§l%s§r(§5%s§b)]§a<%s>§f %s", platform, from_id, nickname, msg);
-                            Component textComponents = Component.literal(toSend);
-                            server.getPlayerList().broadcastSystemMessage(textComponents, false);
+                            ModCommon.sendMessageToAllPlayers(toSend);
                             data = new ActionSuccess();
                         }
                         case "send_cmd" -> {

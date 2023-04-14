@@ -1,18 +1,17 @@
 package cn.evolvefield.mods.botapi.common.command;
 
-import cn.evolvefield.mods.botapi.BotApi;
 import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.TextComponent;
 
-public class ReceiveCmd {
+public class ReceiveCommand {
 
     public static int allExecute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         boolean isEnabled = context.getArgument("enabled", Boolean.class);
-        BotApi.config.getStatus().setRECEIVE_ENABLED(isEnabled);
-        ConfigHandler.save(BotApi.config);
+        ConfigHandler.cached().getStatus().setRECEIVE_ENABLED(isEnabled);
         if (isEnabled) {
             context.getSource().sendSuccess(
                     new TextComponent("全局接收群消息开关已被设置为打开"), true);
@@ -20,39 +19,38 @@ public class ReceiveCmd {
             context.getSource().sendSuccess(
                     new TextComponent("全局接收群消息开关已被设置为关闭"), true);
         }
-        return 0;
+        ConfigHandler.save();
+        return Command.SINGLE_SUCCESS;
     }
 
     public static int chatExecute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         boolean isEnabled = context.getArgument("enabled", Boolean.class);
-        BotApi.config.getStatus().setR_CHAT_ENABLE(isEnabled);
+        ConfigHandler.cached().getStatus().setR_CHAT_ENABLE(isEnabled);
         if (isEnabled) {
-            BotApi.config.getStatus().setRECEIVE_ENABLED(true);
-            ConfigHandler.save(BotApi.config);
+            ConfigHandler.cached().getStatus().setRECEIVE_ENABLED(true);
             context.getSource().sendSuccess(
                     new TextComponent("接收群内聊天消息开关已被设置为打开"), true);
         } else {
-            ConfigHandler.save(BotApi.config);
             context.getSource().sendSuccess(
                     new TextComponent("接收群内聊天消息开关已被设置为关闭"), true);
         }
-        return 0;
+        ConfigHandler.save();
+        return Command.SINGLE_SUCCESS;
 
     }
 
     public static int cmdExecute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         boolean isEnabled = context.getArgument("enabled", Boolean.class);
-        BotApi.config.getStatus().setR_COMMAND_ENABLED(isEnabled);
+        ConfigHandler.cached().getStatus().setR_COMMAND_ENABLED(isEnabled);
         if (isEnabled) {
-            BotApi.config.getStatus().setRECEIVE_ENABLED(true);
-            ConfigHandler.save(BotApi.config);
+            ConfigHandler.cached().getStatus().setRECEIVE_ENABLED(true);
             context.getSource().sendSuccess(
                     new TextComponent("接收群内命令消息开关已被设置为打开"), true);
         } else {
-            ConfigHandler.save(BotApi.config);
             context.getSource().sendSuccess(
                     new TextComponent("接收群内命令消息开关已被设置为关闭"), true);
         }
-        return 0;
+        ConfigHandler.save();
+        return Command.SINGLE_SUCCESS;
     }
 }

@@ -1,7 +1,7 @@
 package cn.evolvefield.mods.botapi.util.locale;
 
-import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.Static;
+import cn.evolvefield.mods.botapi.Const;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
@@ -29,7 +29,7 @@ public abstract class Translation {
     private static final Gson GSON = new Gson();
     private static final Pattern UNSUPPORTED_FORMAT_PATTERN = Pattern.compile("%(\\d+\\$)?[\\d.]*[df]");
     public static final String DEFAULT_LANGUAGE = "en_us";
-    private static volatile Translation instance = loadDefault(BotApi.config.getCommon().getLanguageSelect());
+    private static volatile Translation instance = loadDefault(ConfigHandler.cached().getCommon().getLanguageSelect());
 
     public Translation() {
     }
@@ -44,8 +44,8 @@ public abstract class Translation {
             InputStream inputStream = Translation.class.getResourceAsStream(resourceLocation);
 
             if (inputStream == null) {
-                Static.LOGGER.info(String.format("No BotApi lang file for the language '%s' found. Make it to 'en_us' by default.", langId));
-                inputStream = I18a.class.getResourceAsStream(String.format(resourceFString, DEFAULT_LANGUAGE));
+                Const.LOGGER.info(String.format("No BotApi lang file for the language '%s' found. Make it to 'en_us' by default.", langId));
+                inputStream = I18n.class.getResourceAsStream(String.format(resourceFString, DEFAULT_LANGUAGE));
             }
 
             try {
@@ -66,7 +66,7 @@ public abstract class Translation {
                 inputStream.close();
             }
         } catch (JsonParseException | IOException var8) {
-            Static.LOGGER.error("Couldn't read strings from {}", resourceLocation, var8);
+            Const.LOGGER.error("Couldn't read strings from {}", resourceLocation, var8);
         }
 
         final Map<String, String> inputStream = builder.build();

@@ -1,22 +1,22 @@
 package cn.evolvefield.mods.botapi.common.command;
 
-import cn.evolvefield.mods.botapi.BotApi;
 import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.TextComponent;
 
-public class VerifyKeyCmd {
+public class BotIDCommand {
 
 
     public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        var id = context.getArgument("VerifyKey", String.class);
-        BotApi.config.getBotConfig().setToken(id);
-        ConfigHandler.save(BotApi.config);
+        long id = context.getArgument("BotId", Long.class);
+        ConfigHandler.cached().getCommon().setBotId(id);
         context.getSource().sendSuccess(
-                new TextComponent("已设置Mirai框架的VerifyKey为:" + id), true);
-        return 0;
+                new TextComponent("已设置机器人QQ号为:" + id), true);
+        ConfigHandler.save();
+        return Command.SINGLE_SUCCESS;
     }
 
 

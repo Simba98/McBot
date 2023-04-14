@@ -1,6 +1,7 @@
 package cn.evolvefield.mods.botapi.util.locale;
 
-import cn.evolvefield.mods.botapi.BotApi;
+import cn.evolvefield.mods.botapi.Const;
+import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
@@ -12,6 +13,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextProcessing;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,10 +27,10 @@ import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 
 public abstract class Translation {
-    public static final String DEFAULT_LANGUAGE = "en_us";
     private static final Gson GSON = new Gson();
     private static final Pattern UNSUPPORTED_FORMAT_PATTERN = Pattern.compile("%(\\d+\\$)?[\\d.]*[df]");
-    private static volatile Translation instance = loadDefault(BotApi.config.getCommon().getLanguageSelect());
+    public static final String DEFAULT_LANGUAGE = "en_us";
+    private static volatile Translation instance = loadDefault(ConfigHandler.cached().getCommon().getLanguageSelect());
 
     public Translation() {
     }
@@ -43,8 +45,8 @@ public abstract class Translation {
             InputStream inputStream = Translation.class.getResourceAsStream(resourceLocation);
 
             if (inputStream == null) {
-                BotApi.LOGGER.info(String.format("No BotApi lang file for the language '%s' found. Make it to 'en_us' by default.", langId));
-                inputStream = I18a.class.getResourceAsStream(String.format(resourceFString, DEFAULT_LANGUAGE));
+                Const.LOGGER.info(String.format("No BotApi lang file for the language '%s' found. Make it to 'en_us' by default.", langId));
+                inputStream = I18n.class.getResourceAsStream(String.format(resourceFString, DEFAULT_LANGUAGE));
             }
 
             try {
@@ -65,7 +67,7 @@ public abstract class Translation {
                 inputStream.close();
             }
         } catch (JsonParseException | IOException var8) {
-            BotApi.LOGGER.error("Couldn't read strings from {}", resourceLocation, var8);
+            Const.LOGGER.error("Couldn't read strings from {}", resourceLocation, var8);
         }
 
         final Map<String, String> inputStream = builder.build();
@@ -96,7 +98,7 @@ public abstract class Translation {
         JsonObject jsonObject = (JsonObject) GSON.fromJson(new InputStreamReader(inputStream, StandardCharsets.UTF_8), JsonObject.class);
 
         for (Map.Entry<String, JsonElement> stringJsonElementEntry : jsonObject.entrySet()) {
-            Map.Entry<String, JsonElement> entry = (Map.Entry<String, JsonElement>) stringJsonElementEntry;
+            Map.Entry<String, JsonElement> entry = (Map.Entry) stringJsonElementEntry;
             String string = UNSUPPORTED_FORMAT_PATTERN.matcher(JSONUtils.convertToString((JsonElement) entry.getValue(), (String) entry.getKey())).replaceAll("%$1s");
             biConsumer.accept((String) entry.getKey(), string);
         }
@@ -120,6 +122,6 @@ public abstract class Translation {
     public abstract IReorderingProcessor getVisualOrder(ITextProperties formattedText);
 
     public List<IReorderingProcessor> getVisualOrder(List<ITextProperties> list) {
-        return (List<IReorderingProcessor>) list.stream().map(this::getVisualOrder).collect(ImmutableList.toImmutableList());
+        return (List) list.stream().map(this::getVisualOrder).collect(ImmutableList.toImmutableList());
     }
 }

@@ -1,55 +1,61 @@
-buildscript {
-    repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://maven.parchmentmc.org'}
+plugins {
+    id 'java'
+    id 'idea'
+    id 'maven-publish'
 
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath group: 'org.parchmentmc', name: 'librarian', version: '1.+'
-
-    }
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-apply plugin: 'net.minecraftforge.gradle'
 
-group = 'cn.evolvefield.mods'
-version = '1.16.5-1.8.2'
 
-java {
-    archivesBaseName = 'Bot-Connect-forge'
-    toolchain.languageVersion = JavaLanguageVersion.of(8)
-}
+group = project.maven_group
+version = project.minecraft_version + "-" + project.mod_version
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
 
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
+    //mappings channel: 'official', version: "${minecraft_version}"
 
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'parchment', version: "${parchment_mappings}-${minecraft_version}"
 
+    if (file("./src/main/resources/META-INF/accesstransformer.cfg").exists()) {
+        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
     runs {
         client {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
             mods {
-                botapi {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
         }
-
         server {
             workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
             mods {
-                botapi {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+        gameTestServer {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
+            mods {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -59,10 +65,9 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'botapi', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
+            args '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             mods {
-                botapi {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -70,30 +75,41 @@ minecraft {
     }
 }
 
+if (file("./src/main/resources/${mod_id}.mixins.json").exists()) {
+    mixin {
+        add sourceSets.main, "${mod_id}.refmap.json"
+        config "${mod_id}.mixins.json"
+    }
+}
+
+
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    // flatDir {
-    //     dir 'libs'
-    // }
+    maven {
+        url 'https://maven.nova-committee.cn/releases'
+    }
+    mavenCentral()
 }
+
 
 dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.24'
 
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor "org.projectlombok:lombok:1.18.24"
 
 }
 
-// Example for how to get properties into the manifest for reading at runtime.
+
 jar {
-    finalizedBy('reobfJar')
+    from "LICENSE"
     manifest {
         attributes([
-                "Specification-Title"     : "botapi",
+                "Specification-Title"     : "atomess",
                 "Specification-Vendor"    : "cnlimiter",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
@@ -104,3 +120,12 @@ jar {
     }
 }
 
+jar.finalizedBy('reobfJar')
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+java {
+    archivesBaseName = project.archives_base_name
+    toolchain.languageVersion = JavaLanguageVersion.of(8)
+}

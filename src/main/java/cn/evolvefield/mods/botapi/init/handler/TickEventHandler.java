@@ -1,5 +1,7 @@
 package cn.evolvefield.mods.botapi.init.handler;
 
+import lombok.var;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.TickEvent;
@@ -7,11 +9,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.LinkedList;
-import java.util.Objects;
 import java.util.Queue;
-import java.util.UUID;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TickEventHandler {
     private static final Queue<String> toSendQueue = new LinkedList<>();;
     public static Queue<String> getToSendQueue() {
@@ -20,10 +20,14 @@ public class TickEventHandler {
 
     @SubscribeEvent
     public static void onTickEvent(TickEvent.WorldTickEvent event) {
+        var server = event.world.getServer();
         String toSend = toSendQueue.poll();
-        if (!event.world.isClientSide && toSend != null) {
-            StringTextComponent textComponents = new StringTextComponent(toSend);
-            Objects.requireNonNull(event.world.getServer()).getPlayerList().broadcastMessage(textComponents, ChatType.CHAT, UUID.randomUUID());
+        if (server != null
+                && ConfigHandler.cached() != null
+                && server.isDedicatedServer()
+                && toSend != null) {
+            var textComponents = new StringTextComponent(toSend);
+            server.getPlayerList().broadcastMessage(textComponents, ChatType.SYSTEM, Util.NIL_UUID);
         }
     }
 }

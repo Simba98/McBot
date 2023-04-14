@@ -6,7 +6,7 @@ license="GNU AGPL 3.0"
 modId="botapi" #mandatory
 version="${file.jarVersion}" #mandatory
 displayName="Bot-Connect" #mandatory
-logoFile="BotApi.png" #optional
+logoFile="assets/botapi/icon.png" #optional
 authors="cnlimiter" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
@@ -17,4 +17,5 @@ modId="forge" #mandatory
 mandatory=true #mandatory
 versionRange="[43,)" #mandatory
 ordering="NONE"
-side="SERVER"
+side="BOTH"
+

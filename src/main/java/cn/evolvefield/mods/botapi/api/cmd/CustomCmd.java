@@ -1,8 +1,8 @@
 package cn.evolvefield.mods.botapi.api.cmd;
 
+import cn.evolvefield.mods.botapi.util.locale.GsonHelper;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 
 /**
  * Description:
@@ -29,6 +29,21 @@ public class CustomCmd {
         this.requirePermission = requirePermission;
     }
 
+    public static CustomCmd loadFromJson(ResourceLocation id, JsonObject json) {
+
+        var alies = GsonHelper.getAsString(json, "alies");
+        var content = GsonHelper.getAsString(json, "content");
+        int role = GsonHelper.getAsInt(json, "role", 0);
+
+        var cmd = new CustomCmd(id, alies, content, role);
+
+        var enabled = GsonHelper.getAsBoolean(json, "enabled", true);
+
+        cmd.setEnabled(enabled);
+
+        return cmd;
+    }
+
     public ResourceLocation getId() {
         return id;
     }
@@ -51,20 +66,5 @@ public class CustomCmd {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public static CustomCmd loadFromJson(ResourceLocation id, JsonObject json) {
-
-        var alies = GsonHelper.getAsString(json, "alies");
-        var content = GsonHelper.getAsString(json, "content");
-        int role = GsonHelper.getAsInt(json, "role", 0);
-
-        var cmd = new CustomCmd(id, alies, content, role);
-
-        var enabled = GsonHelper.getAsBoolean(json, "enabled", true);
-
-        cmd.setEnabled(enabled);
-
-        return cmd;
     }
 }

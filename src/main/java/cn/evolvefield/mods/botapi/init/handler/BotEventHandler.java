@@ -1,173 +1,141 @@
 package cn.evolvefield.mods.botapi.init.handler;
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.api.data.BindApi;
-import cn.evolvefield.mods.botapi.api.events.*;
-import cn.evolvefield.mods.botapi.api.message.MiraiMessage;
-import cn.evolvefield.mods.botapi.api.message.SendMessage;
-import cn.evolvefield.mods.botapi.core.bot.BotData;
-import cn.evolvefield.mods.botapi.core.bot.Invoke;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-
-import java.util.Objects;
+import cn.evolvefield.mods.botapi.api.cmd.CmdApi;
+import cn.evolvefield.mods.botapi.util.onebot.CQUtils;
+import cn.evolvefield.onebot.client.handler.EventBus;
+import cn.evolvefield.onebot.client.listener.SimpleListener;
+import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
+import cn.evolvefield.onebot.sdk.event.message.GuildMessageEvent;
+import cn.evolvefield.onebot.sdk.event.notice.group.GroupDecreaseNoticeEvent;
+import cn.evolvefield.onebot.sdk.event.notice.group.GroupIncreaseNoticeEvent;
 
 /**
  * Description:
  * Author: cnlimiter
- * Date: 2022/3/18 19:03
+ * Date: 2022/3/20 8:13
  * Version: 1.0
  */
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class BotEventHandler {
-    @SubscribeEvent
-    public static void GroupEventHandler(GroupMessageEvent event) {
+    public static void init(EventBus dispatchers) {
 
-        if (event.getGroupId() == BotApi.config.getCommon().getGroupId()
-                && BotApi.config.getStatus().isRECEIVE_ENABLED()) {
-
-            if (BotData.getBotFrame().equalsIgnoreCase("cqhttp")) {
-                if (BotApi.config.getCommon().isDebuggable()) {
-                    BotApi.LOGGER.info("收到群" + event.getGroupId() + "发送消息" + event.getMessage());
-                }
-                if (event.getMessage().startsWith(BotApi.config.getCmd().getCommandStart())
-                        && BotApi.config.getStatus().isR_COMMAND_ENABLED()) {
-
-                    Invoke.invokeCommand(event);
-
-                } else if (!event.getMessage().contains("[CQ:") && BotApi.config.getStatus().isR_CHAT_ENABLE()
-                        && event.getUserId() != BotApi.config.getCommon().getBotId()) {
-                    String toSend = String.format("§b[§lQQ§r§b]§a<%s>§f %s", event.getNickName(), event.getMessage());
-                    TickEventHandler.getToSendQueue().add(toSend);
-                }
-            } else if (BotData.getBotFrame().equalsIgnoreCase("mirai")) {
-                if (BotApi.config.getCommon().isDebuggable()) {
-                    for (MiraiMessage msg : event.getMiraiMessage()) {
-                        msg.deBug();
-                    }
-                    System.out.println(event.getMiraiMessage().get(1).getText());
-                }
-                if (event.getMiraiMessage().get(1).getText().startsWith(BotApi.config.getCmd().getCommandStart())
-                        && BotApi.config.getStatus().isR_COMMAND_ENABLED()) {
-
-                    Invoke.invokeCommand(event);
-
-                } else if (!event.getMiraiMessage().get(1).getText().startsWith(BotApi.config.getCmd().getCommandStart())
-                        && BotApi.config.getStatus().isR_CHAT_ENABLE()
-                        && event.getUserId() != BotApi.config.getCommon().getBotId()) {
-                    String toSend = String.format("§b[§lQQ§r§b]§a<%s>§f %s", event.getNickName(), event.getMiraiMessage().get(1).getText());
-                    TickEventHandler.getToSendQueue().add(toSend);
-                }
-            } else {
-                BotApi.LOGGER.error("§b[群服互联] §c错误");
-            }
-
-        }
+        GroupChatHandler(dispatchers);
+        GroupCmdsHandler(dispatchers);
+        GroupMemberNotice(dispatchers);
+        GuildChatHandler(dispatchers);
+        GuildCmdsHandler(dispatchers);
+        dispatchers.start(4);//线程组处理任务
     }
 
-    @SubscribeEvent
-    public static void PrivateEventHandler(PrivateMessageEvent event) {
-        if (event.getGroupId() == BotData.getGroupId()) {
-            if (BindApi.getGroupBindPlayer(event.getUserId()) != null) {
-                String senderName = BindApi.getGroupBindPlayer(event.getUserId());
-                if (BotData.getBotFrame().equalsIgnoreCase("cqhttp")) {
-                    if (event.getMessage().startsWith("@")) {
-                        String playerName = event.getMessage().substring(1);
-                        String[] ctx = event.getMessage().split(" ");
-                        atPlayerInGame(event, senderName, ctx, playerName);
-
-                    }
-                } else if (BotData.getBotFrame().equalsIgnoreCase("mirai")) {
-                    if (event.getMiraiMessage().get(1).getText().startsWith("@")) {
-                        String[] ctx = event.getMiraiMessage().get(1).getText().split(" ");
-                        String playerName = ctx[0].substring(1);
-                        atPlayerInGame(event, senderName, ctx, playerName);
-                    }
-                } else {
-                    BotApi.LOGGER.error("§b[群服互联] §c错误");
-                }
-            } else {
-                SendMessage.Temp(event.getUserId(), event.getGroupId(), "请你先绑定");
-            }
-
-        }
-    }
-
-    private static void atPlayerInGame(PrivateMessageEvent event, String senderName, String[] ctx, String playerName) {
-        if (ctx.length == 2) {
-            MutableComponent textcomponenttranslation = Component.translatable("commands.message.display.incoming",
-                    senderName, Component.literal(ctx[1]));
-
-            if (BotApi.SERVER.getPlayerList().getPlayerByName(playerName) != null) {
-                Objects.requireNonNull(BotApi.SERVER.getPlayerList().getPlayerByName(playerName)).displayClientMessage(textcomponenttranslation, false);
-                SendMessage.Temp(event.getUserId(), event.getGroupId(), "成功发送");
-            } else {
-                SendMessage.Temp(event.getUserId(), event.getGroupId(), "不存在这个人哦");
-            }
-        } else {
-            SendMessage.Temp(event.getUserId(), event.getGroupId(), "错误");
-        }
-    }
-
-    @SubscribeEvent
-    public static void NoticeEventHandler(NoticeEvent event) {
-        if (BotApi.config.getStatus().isS_WELCOME_ENABLE()
-                && BotApi.config.getStatus().isSEND_ENABLED()
-                && event.getGroup_id() == BotApi.config.getCommon().getGroupId()) {
-            if (BotData.getBotFrame().equalsIgnoreCase("cqhttp")) {
-                if (event.getNoticeType().equals("group_increase")) {
-                    SendMessage.Group(BotApi.config.getCommon().getGroupId(), BotApi.config.getCmd().getWelcomeNotice());
-                } else if (event.getNoticeType().equals("group_decrease")) {
-                    SendMessage.Group(BotApi.config.getCommon().getGroupId(), BotApi.config.getCmd().getLeaveNotice());
-
-//                    if (BindApi.existGroupBind(event.getUser_id())){
-//                        BindApi.delGroupBind(event.getUser_id());
-//                        BotApi.SERVER.getCommands().performCommand(new CommandSourceStack(CommandSource.NULL, Vec3.ZERO, Vec2.ZERO, BotApi.SERVER.overworld(), 4, "",
-//                                Component.literal(""), Objects.requireNonNull(BotApi.SERVER), null), "whitelist remove " + event);
-//
-//                    }
-
-                }
-            } else if (BotData.getBotFrame().equalsIgnoreCase("mirai")) {
-                if (event.getNoticeType().equals("MemberJoinEvent")) {
-                    SendMessage.Group(BotApi.config.getCommon().getGroupId(), BotApi.config.getCmd().getWelcomeNotice());
-                } else if (event.getNoticeType().equals("MemberLeaveEventQuit")) {
-                    SendMessage.Group(BotApi.config.getCommon().getGroupId(), BotApi.config.getCmd().getLeaveNotice());
-                }
-            } else {
-                BotApi.LOGGER.error("§b[群服互联] §c错误");
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void ChannelGroupEventHandler(ChannelGroupMessageEvent event) {
-
-        if (event.getGuild_id().equals(BotApi.config.getCommon().getGuildId())
-                && BotApi.config.getCommon().getChannelIdList().contains(event.getChannel_id())
-        ) {
-            if (BotData.getBotFrame().equalsIgnoreCase("cqhttp")) {
-                if (BotApi.config.getCommon().isDebuggable()) {
-                    BotApi.LOGGER.info("收到频道:" + event.getGuild_id() + "的子频道:" + event.getChannel_id() + "发送消息" + event.getMessage());
-                }
-                if (event.getMessage().startsWith(BotApi.config.getCmd().getCommandStart())
-                        && BotApi.config.getStatus().isR_COMMAND_ENABLED()) {
-
-                    Invoke.invokeChannelCmd(event);
-
-                } else if (!event.getMessage().contains("[CQ:") && BotApi.config.getStatus().isR_CHAT_ENABLE()
+    private static void GroupChatHandler(EventBus dispatchers) {
+        dispatchers.addListener(new SimpleListener<GroupMessageEvent>() {
+            @Override
+            public void onMessage(GroupMessageEvent event) {
+                if (ConfigHandler.cached().getCommon().getGroupIdList().contains(event.getGroupId())//判断是否是配置中的群
+                        && !event.getMessage().startsWith(ConfigHandler.cached().getCmd().getCommandStart())//过滤命令前缀
+                        && ConfigHandler.cached().getStatus().isRECEIVE_ENABLED()//总接受开关
+                        && ConfigHandler.cached().getStatus().isR_CHAT_ENABLE()//接受聊天开关
+                        && event.getUserId() != ConfigHandler.cached().getCommon().getBotId()
                 ) {
-                    String toSend = String.format("§b[§lQQ§r§b]§a<%s>§f %s", event.getNickname(), event.getMessage());
+
+                    String send = CQUtils.replace(event.getMessage());//暂时匹配仅符合字符串聊天内容与图片
+
+                    if (ConfigHandler.cached().getCmd().isQqChatPrefixEnable()) {
+                        var split = event.getMessage().split(" ");
+                        if (ConfigHandler.cached().getCmd().getQqChatPrefix().equals(split[0])) //指定前缀发送
+                            send = split[1];
+                        else return;
+                    }
+                    String toSend = String.format("§b[§l%s§r(§5%s§b)]§a<%s>§f %s", ConfigHandler.cached().getCmd().getQqPrefix(), event.getGroupId(), event.getSender().getNickname(), send);
                     TickEventHandler.getToSendQueue().add(toSend);
+
+
                 }
             }
-        }
+        });
     }
 
-    @SubscribeEvent
-    public static void RequestsEventHandler(RequestEvent event) {
+    private static void GroupCmdsHandler(EventBus dispatchers) {
+        dispatchers.addListener(new SimpleListener<GroupMessageEvent>() {
+            @Override
+            public void onMessage(GroupMessageEvent event) {
+                if (ConfigHandler.cached().getCommon().getGroupIdList().contains(event.getGroupId())
+                        && event.getMessage().startsWith(ConfigHandler.cached().getCmd().getCommandStart())//命令前缀
+                        && ConfigHandler.cached().getStatus().isRECEIVE_ENABLED()//总接受开关
+                        && ConfigHandler.cached().getStatus().isR_COMMAND_ENABLED()//接受命令开关
+                ) {
+                    CmdApi.invokeCommandGroup(event);
+                }
+            }
+        });
+    }
+
+    private static void GroupMemberNotice(EventBus dispatchers) {
+        dispatchers.addListener(new SimpleListener<GroupDecreaseNoticeEvent>() {
+            @Override
+            public void onMessage(GroupDecreaseNoticeEvent event) {
+                if (ConfigHandler.cached().getCommon().getGroupIdList().contains(event.getGroupId())
+                        && ConfigHandler.cached().getStatus().isRECEIVE_ENABLED()
+                        && ConfigHandler.cached().getStatus().isS_QQ_WELCOME_ENABLE()) {
+                    BotApi.bot.sendGroupMsg(event.getGroupId(), ConfigHandler.cached().getCmd().getWelcomeNotice(), true);
+                }
+            }
+        });
+
+        dispatchers.addListener(new SimpleListener<GroupIncreaseNoticeEvent>() {
+            @Override
+            public void onMessage(GroupIncreaseNoticeEvent event) {
+                if (ConfigHandler.cached().getCommon().getGroupIdList().contains(event.getGroupId())
+                        && ConfigHandler.cached().getStatus().isRECEIVE_ENABLED()
+                        && ConfigHandler.cached().getStatus().isS_QQ_LEAVE_ENABLE()) {
+                    BotApi.bot.sendGroupMsg(event.getGroupId(), ConfigHandler.cached().getCmd().getLeaveNotice(), true);
+                }
+            }
+        });
 
     }
+
+    private static void GuildChatHandler(EventBus dispatchers) {
+        dispatchers.addListener(new SimpleListener<GuildMessageEvent>() {
+            @Override
+            public void onMessage(GuildMessageEvent event) {
+                if (event.getGuildId().equals(ConfigHandler.cached().getCommon().getGuildId())
+                        && ConfigHandler.cached().getCommon().getChannelIdList().contains(event.getChannelId())
+                        && !event.getMessage().startsWith(ConfigHandler.cached().getCmd().getCommandStart())//过滤命令前缀
+                        && ConfigHandler.cached().getStatus().isRECEIVE_ENABLED()//总接受开关
+                        && ConfigHandler.cached().getStatus().isR_CHAT_ENABLE()//接受聊天开关
+                        && event.getUserId() != ConfigHandler.cached().getCommon().getBotId()
+                ) {
+
+                    String send = CQUtils.replace(event.getMessage());//暂时匹配仅符合字符串聊天内容与图片
+                    if (ConfigHandler.cached().getCmd().isQqChatPrefixEnable()) {
+                        var split = event.getMessage().split(" ");
+                        if (ConfigHandler.cached().getCmd().getQqChatPrefix().equals(split[0])) //指定前缀发送
+                            send = split[1];
+                        else return;
+                    }
+                    String toSend = String.format("§b[§l%s§r(§5%s§b)]§a<%s>§f %s", ConfigHandler.cached().getCmd().getGuildPrefix(), event.getChannelId(), event.getSender().getNickname(), send);
+                    TickEventHandler.getToSendQueue().add(toSend);
+
+                }
+            }
+        });
+    }
+
+    private static void GuildCmdsHandler(EventBus dispatchers) {
+        dispatchers.addListener(new SimpleListener<GuildMessageEvent>() {
+            @Override
+            public void onMessage(GuildMessageEvent event) {
+                if (ConfigHandler.cached().getCommon().getChannelIdList().contains(event.getChannelId())
+                        && event.getMessage().startsWith(ConfigHandler.cached().getCmd().getCommandStart())//命令前缀
+                        && ConfigHandler.cached().getStatus().isRECEIVE_ENABLED()//总接受开关
+                        && ConfigHandler.cached().getStatus().isR_COMMAND_ENABLED()//接受命令开关
+                ) {
+                    CmdApi.invokeCommandGuild(event);
+                }
+            }
+        });
+    }
+
+
 }

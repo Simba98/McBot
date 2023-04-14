@@ -2,9 +2,8 @@ package cn.evolvefield.mods.botapi.init.handler;
 
 
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.api.message.SendMessage;
-import cn.evolvefield.mods.botapi.util.locale.I18a;
-import net.minecraft.world.entity.player.Player;
+import cn.evolvefield.mods.botapi.util.locale.I18n;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -18,24 +17,28 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (BotApi.config.getStatus().isS_JOIN_ENABLE() && BotApi.config.getStatus().isSEND_ENABLED()) {
-            if (BotApi.config.getCommon().isGuildOn() && !BotApi.config.getCommon().getChannelIdList().isEmpty()) {
-                for (String id : BotApi.config.getCommon().getChannelIdList())
-                    SendMessage.ChannelGroup(BotApi.config.getCommon().getGuildId(), id, event.getEntity().getDisplayName().getString() + " 加入了服务器");
+        var player = event.getEntity();
+        if (ConfigHandler.cached().getStatus().isS_JOIN_ENABLE() && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
+            if (ConfigHandler.cached().getCommon().isGuildOn() && !ConfigHandler.cached().getCommon().getChannelIdList().isEmpty()) {
+                for (String id : ConfigHandler.cached().getCommon().getChannelIdList())
+                    BotApi.bot.sendGuildMsg(ConfigHandler.cached().getCommon().getGuildId(), id, player.getDisplayName().getString() + " 加入了服务器");
             } else {
-                SendMessage.Group(BotApi.config.getCommon().getGroupId(), event.getEntity().getDisplayName().getString() + " 加入了服务器");
+                for (long id : ConfigHandler.cached().getCommon().getGroupIdList())
+                    BotApi.bot.sendGroupMsg(id, player.getDisplayName().getString() + " 加入了服务器", true);
             }
         }
     }
 
     @SubscribeEvent
     public static void playerLeft(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (BotApi.config.getStatus().isS_LEAVE_ENABLE() && BotApi.config.getStatus().isSEND_ENABLED()) {
-            if (BotApi.config.getCommon().isGuildOn() && !BotApi.config.getCommon().getChannelIdList().isEmpty()) {
-                for (String id : BotApi.config.getCommon().getChannelIdList())
-                    SendMessage.ChannelGroup(BotApi.config.getCommon().getGuildId(), id, event.getEntity().getDisplayName().getString() + " 离开了服务器");
+        var player = event.getEntity();
+        if (ConfigHandler.cached().getStatus().isS_LEAVE_ENABLE() && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
+            if (ConfigHandler.cached().getCommon().isGuildOn() && !ConfigHandler.cached().getCommon().getChannelIdList().isEmpty()) {
+                for (String id : ConfigHandler.cached().getCommon().getChannelIdList())
+                    BotApi.bot.sendGuildMsg(ConfigHandler.cached().getCommon().getGuildId(), id, player.getDisplayName().getString() + " 离开了服务器");
             } else {
-                SendMessage.Group(BotApi.config.getCommon().getGroupId(), event.getEntity().getDisplayName().getString() + " 离开了服务器");
+                for (long id : ConfigHandler.cached().getCommon().getGroupIdList())
+                    BotApi.bot.sendGroupMsg(id, player.getDisplayName().getString() + " 离开了服务器", true);
 
             }
         }
@@ -44,29 +47,37 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public static void playerDeadEvent(LivingDeathEvent event) {
-        if (event.getEntity() instanceof Player && BotApi.config.getStatus().isS_DEATH_ENABLE() && BotApi.config.getStatus().isSEND_ENABLED()) {
-            String message = event.getSource().getLocalizedDeathMessage(event.getEntity()).getString();
-            if (BotApi.config.getCommon().isGuildOn() && !BotApi.config.getCommon().getChannelIdList().isEmpty()) {
-                for (String id : BotApi.config.getCommon().getChannelIdList())
-                    SendMessage.ChannelGroup(BotApi.config.getCommon().getGuildId(), id, String.format(message, event.getEntity().getDisplayName().getString()));
+        var player = event.getEntity();
+        var source = event.getSource();
+        if (player != null && ConfigHandler.cached().getStatus().isS_DEATH_ENABLE() && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
+            LivingEntity livingEntity2 = player.getKillCredit();
+            String string = "botapi.death.attack." + source.msgId;
+            String msg = livingEntity2 != null ? I18n.get(string, player.getDisplayName().getString(), livingEntity2.getDisplayName().getString()) : I18n.get(string, player.getDisplayName().getString());
+
+            if (ConfigHandler.cached().getCommon().isGuildOn() && !ConfigHandler.cached().getCommon().getChannelIdList().isEmpty()) {
+                for (String id : ConfigHandler.cached().getCommon().getChannelIdList())
+                    BotApi.bot.sendGuildMsg(ConfigHandler.cached().getCommon().getGuildId(), id, String.format(msg, player.getDisplayName().getString()));
             } else {
-                SendMessage.Group(BotApi.config.getCommon().getGroupId(), String.format(message, event.getEntity().getDisplayName().getString()));
+                for (long id : ConfigHandler.cached().getCommon().getGroupIdList())
+                    BotApi.bot.sendGroupMsg(id, String.format(msg, player.getDisplayName().getString()), true);
             }
         }
     }
 
     @SubscribeEvent
-    public static void playerAdvancementEvent(AdvancementEvent event) {
-        if (BotApi.config.getStatus().isS_ADVANCE_ENABLE() && event.getAdvancement().getDisplay() != null && BotApi.config.getStatus().isSEND_ENABLED()) {
-            String msg = I18a.get("botapi.chat.type.advancement." + event.getAdvancement().getDisplay().getFrame().getName(), event.getEntity().getDisplayName().getString(), I18a.get(event.getAdvancement().getDisplay().getTitle().getString()));
+    public static void playerAdvancementEvent(AdvancementEvent.AdvancementEarnEvent event) {
+        var player = event.getEntity();
+        var advancement = event.getAdvancement();
+        if (ConfigHandler.cached().getStatus().isS_ADVANCE_ENABLE() && advancement.getDisplay() != null && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
+            String msg = I18n.get("botapi.chat.type.advancement." + advancement.getDisplay().getFrame().getName(), player.getDisplayName().getString(), I18n.get(advancement.getDisplay().getTitle().getString()));
 
-            if (BotApi.config.getCommon().isGuildOn() && !BotApi.config.getCommon().getChannelIdList().isEmpty()) {
-                for (String id : BotApi.config.getCommon().getChannelIdList())
-                    SendMessage.ChannelGroup(BotApi.config.getCommon().getGuildId(), id, msg);
+            if (ConfigHandler.cached().getCommon().isGuildOn() && !ConfigHandler.cached().getCommon().getChannelIdList().isEmpty()) {
+                for (String id : ConfigHandler.cached().getCommon().getChannelIdList())
+                    BotApi.bot.sendGuildMsg(ConfigHandler.cached().getCommon().getGuildId(), id, msg);
             } else {
-                SendMessage.Group(BotApi.config.getCommon().getGroupId(), msg);
+                for (long id : ConfigHandler.cached().getCommon().getGroupIdList())
+                    BotApi.bot.sendGroupMsg(id, msg, true);
             }
-
         }
     }
 }

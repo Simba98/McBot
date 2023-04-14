@@ -1,6 +1,6 @@
 package cn.evolvefield.mods.botapi.init.handler;
+
 import cn.evolvefield.mods.botapi.BotApi;
-import cn.evolvefield.mods.botapi.api.message.SendMessage;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -10,13 +10,34 @@ import net.minecraftforge.fml.common.Mod;
 public class ChatEventHandler {
     @SubscribeEvent
     public static void onChatEvent(ServerChatEvent event) {
-        if (BotApi.config.getStatus().isS_CHAT_ENABLE() && BotApi.config.getStatus().isSEND_ENABLED()) {
-            if (BotApi.config.getCommon().isGuildOn() && !BotApi.config.getCommon().getChannelIdList().isEmpty()) {
-                for (String id : BotApi.config.getCommon().getChannelIdList())
-                    SendMessage.ChannelGroup(BotApi.config.getCommon().getGuildId(), id, String.format("[" + BotApi.config.getCmd().getQqPrefix() + "]<%s> %s", event.getUsername(), event.getMessage()));
+        var message = event.getRawText();
+        var player = event.getPlayer();
+        var split = message.split(" ");
+        if (ConfigHandler.cached() != null
+                && ConfigHandler.cached().getStatus().isS_CHAT_ENABLE()
+                && ConfigHandler.cached().getStatus().isSEND_ENABLED()
+                && !message.contains("CICode")
+        ) {
+            if (ConfigHandler.cached().getCommon().isGuildOn() && !ConfigHandler.cached().getCommon().getChannelIdList().isEmpty()) {
+                for (String id : ConfigHandler.cached().getCommon().getChannelIdList())
+                    BotApi.bot.sendGuildMsg(ConfigHandler.cached().getCommon().getGuildId(),
+                            id,
+                            String.format("[" + ConfigHandler.cached().getCmd().getMcPrefix() + "]<%s> %s",
+                                    player.getDisplayName().getString(),
+                                    ConfigHandler.cached().getCmd().isMcChatPrefixEnable()
+                                            && ConfigHandler.cached().getCmd().getMcChatPrefix().equals(split[0]) ? split[1] : message));
             } else {
-                SendMessage.Group(BotApi.config.getCommon().getGroupId(), String.format("[" + BotApi.config.getCmd().getQqPrefix() + "]<%s> %s", event.getUsername(), event.getMessage()));
+                for (long id : ConfigHandler.cached().getCommon().getGroupIdList())
+                    BotApi.bot.sendGroupMsg(
+                            id,
+                            String.format("[" + ConfigHandler.cached().getCmd().getMcPrefix() + "]<%s> %s",
+                                    player.getDisplayName().getString(),
+                                    ConfigHandler.cached().getCmd().isMcChatPrefixEnable()
+                                            && ConfigHandler.cached().getCmd().getMcChatPrefix().equals(split[0]) ? split[1] : message),
+                            true);
             }
+
+
         }
     }
 }

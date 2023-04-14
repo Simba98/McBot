@@ -1,78 +1,61 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url "https://jitpack.io" }
-        maven { url = 'https://maven.parchmentmc.org' }
-        maven {
-            name = 'sonatype'
-            url = 'https://oss.sonatype.org/content/groups/public/'
-        }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.parchmentmc:librarian:1.+'
-    }
+plugins {
+    id 'java'
+    id 'idea'
+    id 'maven-publish'
+
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
-group = 'cn.evolvefield.mods'
-version = '1.19-1.8.2'
 
-java {
-    archivesBaseName = 'Bot-Connect-forge'
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
-}
+group = project.maven_group
+version = project.minecraft_version + "-" + project.mod_version
+
+
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
+    //mappings channel: 'official', version: "${minecraft_version}"
 
-    mappings channel: 'parchment', version: '2022.08.28-1.19.2'
+    mappings channel: 'parchment', version: "${parchment_mappings}-${minecraft_version}"
 
+    if (file("./src/main/resources/META-INF/accesstransformer.cfg").exists()) {
+        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
     runs {
         client {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'botapi'
-
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
             mods {
-                botapi {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
         }
-
         server {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'botapi'
-
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
             mods {
-                botapi {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
         }
-
         gameTestServer {
             workingDirectory project.file('run')
+
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'botapi'
-
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
             mods {
-                botapi {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -80,16 +63,11 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'botapi', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
+            args '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             mods {
-                botapi {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -97,24 +75,41 @@ minecraft {
     }
 }
 
+if (file("./src/main/resources/${mod_id}.mixins.json").exists()) {
+    mixin {
+        add sourceSets.main, "${mod_id}.refmap.json"
+        config "${mod_id}.mixins.json"
+    }
+}
+
+
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-
+    maven {
+        url 'https://maven.nova-committee.cn/releases'
+    }
+    mavenCentral()
 }
+
 
 dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.24'
 
-    minecraft 'net.minecraftforge:forge:1.19.2-43.1.3'
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor "org.projectlombok:lombok:1.18.24"
 
 }
 
-// Example for how to get properties into the manifest for reading at runtime.
+
 jar {
+    from "LICENSE"
     manifest {
         attributes([
-                "Specification-Title"     : "botapi",
+                "Specification-Title"     : "atomess",
                 "Specification-Vendor"    : "cnlimiter",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
@@ -128,5 +123,9 @@ jar {
 jar.finalizedBy('reobfJar')
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = 'UTF-8'
+}
+java {
+    archivesBaseName = project.archives_base_name
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
 }

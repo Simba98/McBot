@@ -1,95 +1,61 @@
-buildscript {
-    repositories {
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
-    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'java'
+    id 'idea'
     id 'maven-publish'
+
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-apply plugin: 'org.spongepowered.mixin'
-apply from: file("config.gradle")
-
-version = project.mod_version
 group = project.maven_group
+version = project.minecraft_version + "-" + project.mod_version
 
 java {
     archivesBaseName = project.archives_base_name
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
+    //mappings channel: 'official', version: "${minecraft_version}"
 
-    mappings channel: 'official', version: '1.19.2'
+    mappings channel: 'parchment', version: "${parchment_mappings}-${minecraft_version}"
 
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
+    if (file("./src/main/resources/META-INF/accesstransformer.cfg").exists()) {
+        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
     runs {
         client {
             workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            // The markers can be added/remove as needed separated by commas.
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
             property 'forge.logging.markers', 'REGISTRIES'
-
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
-
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'botapi'
-
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
             mods {
-                botapi {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
         }
-
         server {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'botapi'
-
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
             mods {
-                botapi {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
         }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             workingDirectory project.file('run')
 
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'botapi'
-
+            property 'forge.enabledGameTestNamespaces', "${mod_id}"
             mods {
-                botapi {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -97,16 +63,11 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'REGISTRIES'
-
             property 'forge.logging.console.level', 'debug'
-
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'botapi', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
+            args '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             mods {
-                botapi {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -114,11 +75,14 @@ minecraft {
     }
 }
 
-mixin {
-    add sourceSets.main, "botapi.refmap.json"
-
-    config "botapi.mixins.json"
+if (file("./src/main/resources/${mod_id}.mixins.json").exists()) {
+    mixin {
+        add sourceSets.main, "${mod_id}.refmap.json"
+        config "${mod_id}.mixins.json"
+    }
 }
+
+
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
@@ -126,22 +90,26 @@ repositories {
     maven {
         url 'https://maven.nova-committee.cn/releases'
     }
+    mavenCentral()
 }
+
 
 dependencies {
-    implementation "cn.evolvefield.bot:OneBot-SDK:${project.sdk_version}"
-    jarJar "cn.evolvefield.bot:OneBot-SDK:[0.1.4,1.0.0)"
-    minecraft 'net.minecraftforge:forge:1.19.2-43.1.25'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    annotationProcessor "cn.evolvefield.bot:OneBot-SDK:${project.sdk_version}"
+    annotationProcessor "org.projectlombok:lombok:1.18.24"
 
 }
 
-// Example for how to get properties into the manifest for reading at runtime.
+
 jar {
+    from "LICENSE"
     manifest {
         attributes([
-                "Specification-Title"     : "botapi",
+                "Specification-Title"     : "atomess",
                 "Specification-Vendor"    : "cnlimiter",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
@@ -155,14 +123,11 @@ jar {
 jar.finalizedBy('reobfJar')
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = 'UTF-8'
 }
-
-jarJar{
-    enable()
-    dependencies {
-        include(dependency(group: 'cn.evolvefield.bot', name: 'OneBot-SDK', version: '0.1.4'))
-    }
+java {
+    archivesBaseName = project.archives_base_name
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
 publishing {

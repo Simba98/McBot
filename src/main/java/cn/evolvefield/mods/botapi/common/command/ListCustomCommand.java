@@ -1,25 +1,21 @@
 package cn.evolvefield.mods.botapi.common.command;
 
-import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
+
+import cn.evolvefield.mods.botapi.init.handler.CustomCmdHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import lombok.val;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.TextComponent;
 
-public class GuildIDCommand {
-
+public class ListCustomCommand {
 
     public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        val id = context.getArgument("GuildID", String.class);
-        ConfigHandler.cached().getCommon().setGuildOn(true);
-        ConfigHandler.cached().getCommon().setGuildId(id);
-        context.getSource().sendSuccess(
-                new TextComponent("已设置互通的频道号为:" + id), true);
-        ConfigHandler.save();
+        StringBuilder out = new StringBuilder();
+        for (String s : CustomCmdHandler.INSTANCE.getCustomCmdMap().keySet()) {
+            out.append(s).append("\n");
+        }
+        context.getSource().sendSuccess(new TextComponent(out.toString()), true);
         return Command.SINGLE_SUCCESS;
     }
-
-
 }

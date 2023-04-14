@@ -27,8 +27,8 @@ _✨ Based on [OneBot](https://github.com/howmanybots/onebot/blob/master/README.
 
 # LTS
 
-> Forge-1.19.2  
-> Fabric-1.19.2
+> Forge-1.19.3  
+> Fabric-1.19.3
 
 # QuickStart
 
@@ -118,5 +118,3 @@ Thanks [JetBrains](https://www.jetbrains.com/?from=Shiro) Provide Free License S
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/Nova-Committee/Bot-Connect.svg)](https://starchart.cc/Nova-Committee/Bot-Connect)
-
-

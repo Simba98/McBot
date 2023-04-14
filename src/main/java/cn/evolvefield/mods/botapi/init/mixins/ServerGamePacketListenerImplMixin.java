@@ -2,7 +2,7 @@ package cn.evolvefield.mods.botapi.init.mixins;
 
 import cn.evolvefield.mods.botapi.init.callbacks.ServerLevelEvents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,9 +23,9 @@ public class ServerGamePacketListenerImplMixin {
     @Shadow
     public ServerPlayer player;
 
-    @Inject(method = "handleChat(Ljava/lang/String;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"))
+    @Inject(method = "handleChat(Ljava/lang/String;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V", shift = At.Shift.BEFORE))
     public void handleChat(String string, CallbackInfo ci) {
-        Component component2 = new TranslatableComponent("chat.type.text", this.player.getDisplayName(), string);
+        Component component2 = new TextComponent(String.format("<%s> %s", this.player.getDisplayName(), string));
         ServerLevelEvents.Server_Chat.invoker().onChat(this.player, string, component2);
     }
 }

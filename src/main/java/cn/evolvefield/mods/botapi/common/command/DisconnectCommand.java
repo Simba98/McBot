@@ -14,15 +14,15 @@ public class DisconnectCommand {
 
     public static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (BotApi.service != null) {
-            BotApi.service.close();
-            if (BotApi.service.isClosed()) {
+            BotApi.service.stop();
+            if (!BotApi.service.ws.isOpen()) {
                 context.getSource().sendSuccess(new TextComponent("WebSocket已断开连接"), true);
             } else {
                 context.getSource().sendSuccess(new TextComponent("WebSocket目前未连接"), true);
             }
-            BotApi.config.getCommon().setEnable(false);
-            ConfigHandler.save(BotApi.config);
+            ConfigHandler.cached().getCommon().setEnable(false);
         }
+        ConfigHandler.save();
         return Command.SINGLE_SUCCESS;
     }
 }

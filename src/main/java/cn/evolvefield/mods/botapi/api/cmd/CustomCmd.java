@@ -1,8 +1,10 @@
 package cn.evolvefield.mods.botapi.api.cmd;
 
 import com.google.gson.JsonObject;
+import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import lombok.val;
 
 /**
  * Description:
@@ -31,13 +33,13 @@ public class CustomCmd {
 
     public static CustomCmd loadFromJson(ResourceLocation id, JsonObject json) {
 
-        String alies = GsonHelper.getAsString(json, "alies");
-        String content = GsonHelper.getAsString(json, "content");
+        val alies = GsonHelper.getAsString(json, "alies");
+        val content = GsonHelper.getAsString(json, "content");
         int role = GsonHelper.getAsInt(json, "role", 0);
 
-        CustomCmd cmd = new CustomCmd(id, alies, content, role);
+        val cmd = new CustomCmd(id, alies, content, role);
 
-        boolean enabled = GsonHelper.getAsBoolean(json, "enabled", true);
+        val enabled = GsonHelper.getAsBoolean(json, "enabled", true);
 
         cmd.setEnabled(enabled);
 

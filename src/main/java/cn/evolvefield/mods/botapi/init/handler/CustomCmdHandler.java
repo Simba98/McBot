@@ -1,6 +1,6 @@
 package cn.evolvefield.mods.botapi.init.handler;
 
-import cn.evolvefield.mods.botapi.Static;
+import cn.evolvefield.mods.botapi.Const;
 import cn.evolvefield.mods.botapi.api.cmd.CustomCmd;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.val;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.IOUtils;
@@ -28,100 +29,111 @@ import java.util.concurrent.TimeUnit;
  */
 public class CustomCmdHandler {
 
-    private static final CustomCmdHandler INSTANCE = new CustomCmdHandler();
+    public static final CustomCmdHandler INSTANCE = new CustomCmdHandler();
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
 
     private static final File dir = FabricLoader.getInstance().getConfigDir().resolve("botapi/custom_cmd/").toFile();
 
-
     private final Map<String, CustomCmd> customCmdMap = new LinkedHashMap<>();
-
-    public static CustomCmdHandler getInstance() {
-        return INSTANCE;
-    }
 
     public List<CustomCmd> getCustomCmds() {
         return Lists.newArrayList(this.customCmdMap.values());
+    }
+
+    public CustomCmd getCmdByAlies(String alies) {
+        return this.customCmdMap.get(alies);
     }
 
     public Map<String, CustomCmd> getCustomCmdMap() {
         return customCmdMap;
     }
 
-    public CustomCmd getCustomCmdByAlies(String alies) {
-        return this.customCmdMap.get(alies);
-    }
-
     public void load() {
-        Stopwatch stopwatch = Stopwatch.createStarted();
+        val stopwatch = Stopwatch.createStarted();
 
         this.writeDefault();
 
         clear();
 
         if (!dir.mkdirs() && dir.isDirectory()) {
-            this.loadFiles(dir);
+            this.loadFiles();
         }
 
         stopwatch.stop();
 
-        Static.LOGGER.info("Loaded {} custom cmd(s) in {} ms", this.customCmdMap.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS));
+        Const.LOGGER.info("Loaded {} custom cmd(s) in {} ms", this.customCmdMap.size(), stopwatch.elapsed(TimeUnit.MILLISECONDS));
     }
 
     public void writeDefault() {
         if (!dir.exists() && dir.mkdirs()) {
-            JsonObject json = new JsonObject();
+            val json = new JsonObject();
             json.addProperty("alies", "list");
             json.addProperty("content", "list");
             json.addProperty("role", 0);
             json.addProperty("enable", true);
 
+            val json2 = new JsonObject();
+            json2.addProperty("alies", "say");
+            json2.addProperty("content", "say %");
+            json2.addProperty("role", 1);
+            json2.addProperty("enable", true);
+
             FileWriter writer = null;
+            FileWriter writer2 = null;
 
             try {
-                File file = new File(dir, "list.json");
+                val file = new File(dir, "list.json");
+                val file2 = new File(dir, "say.json");
                 writer = new FileWriter(file);
+                writer2 = new FileWriter(file2);
 
                 GSON.toJson(json, writer);
+                GSON.toJson(json2, writer2);
+
                 writer.close();
+                writer2.close();
             } catch (Exception e) {
-                Static.LOGGER.error("An error occurred while generating default custom cmd", e);
+                Const.LOGGER.error("An error occurred while generating default custom cmd", e);
             } finally {
                 IOUtils.closeQuietly(writer);
+                IOUtils.closeQuietly(writer2);
             }
 
         }
     }
 
-    private void loadFiles(File dir) {
-        File[] files = dir.listFiles((FileFilter) FileFilterUtils.suffixFileFilter(".json"));
+    private void loadFiles() {
+        val files = CustomCmdHandler.dir.listFiles((FileFilter) FileFilterUtils.suffixFileFilter(".json"));
         if (files == null)
             return;
 
-        for (File file : files) {
+        for (val file : files) {
             JsonObject json;
             InputStreamReader reader = null;
             CustomCmd customCmd = null;
 
             try {
-                JsonParser parser = new JsonParser();
                 reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-                String name = file.getName().replace(".json", "");
-                json = parser.parse(reader).getAsJsonObject();
+                val name = file.getName().replace(".json", "");
+                json = new JsonParser().parse(reader).getAsJsonObject();
 
-                customCmd = CustomCmd.loadFromJson(new ResourceLocation(Static.MODID, name), json);
+                customCmd = CustomCmd.loadFromJson(new ResourceLocation(Const.MODID, name), json);
 
                 reader.close();
             } catch (Exception e) {
-                Static.LOGGER.error("An error occurred while loading custom cmd", e);
+                Const.LOGGER.error("加载自定义命令出错，请检查文件", e);
             } finally {
                 IOUtils.closeQuietly(reader);
             }
 
             if (customCmd != null && customCmd.isEnabled()) {
                 String alies = customCmd.getCmdAlies();
-
+                if (customCmd.getCmdContent().contains("%"))
+                    alies = customCmd.getCmdContent().split("%")[0].replaceAll(" ", "");
+                Const.LOGGER.debug(alies);
                 this.customCmdMap.put(alies, customCmd);
+
+
             }
         }
     }

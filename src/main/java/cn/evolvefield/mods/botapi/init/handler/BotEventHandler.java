@@ -25,7 +25,7 @@ public class BotEventHandler {
         GroupMemberNotice(dispatchers);
         GuildChatHandler(dispatchers);
         GuildCmdsHandler(dispatchers);
-        dispatchers.start(4);//线程组处理任务
+        dispatchers.start(1);//线程组处理任务
     }
 
     private static void GroupChatHandler(EventBus dispatchers) {

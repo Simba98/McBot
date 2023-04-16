@@ -43,43 +43,43 @@ public class CQUtils {
                                 .map(it -> it.substring(it.indexOf('=')) + 1)
                                 .findFirst();
                         if (url.isPresent()) {
-                            message = String.format("[[CICode,url=%s,name=来自QQ的图片]]", url.get());
+                            message = matcher.replaceAll(String.format("[[CICode,url=%s,name=来自QQ的图片]]", url.get()));
                         } else {
-                            message = "[图片]";
+                            message = matcher.replaceAll("[图片]");
                         }
                     } else
-                        message = "[图片]";
+                        message = matcher.replaceAll("[图片]");
                     break;
                 }
                 case "reply":
-                    message = "[回复]";
+                    message = matcher.replaceAll("[回复]");
                     break;
                 case "at":
-                    message = "[@]";
+                    message = matcher.replaceAll("[[@]]");
                     break;
                 case "record":
-                    message = "[语音]";
+                    message = matcher.replaceAll("[语音]");
                     break;
                 case "forward":
-                    message = "[合并转发]";
+                    message = matcher.replaceAll("[合并转发]");
                     break;
                 case "video":
-                    message = "[视频]";
+                    message = matcher.replaceAll("[视频]");
                     break;
                 case "music":
-                    message = "[音乐]";
+                    message = matcher.replaceAll("[音乐]");
                     break;
                 case "redbag":
-                    message = "[红包]";
+                    message = matcher.replaceAll("[红包]");
                     break;
                 case "poke":
-                    message = "[戳一戳]";
+                    message = matcher.replaceAll("[戳一戳]");
                     break;
                 case "face":
-                    message = "[表情]";
+                    message = matcher.replaceAll("[表情]");
                     break;
                 default:
-                    message = "[?]";
+                    message = matcher.replaceAll("[?]");
                     break;
             }
         }

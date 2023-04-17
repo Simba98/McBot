@@ -1,12 +1,14 @@
 package cn.evolvefield.onebot.client.listener;
 
+import cn.evolvefield.onebot.sdk.event.Event;
+
 /**
  * Description:
  * Author: cnlimiter
  * Date: 2022/9/14 16:11
  * Version: 1.0
  */
-public interface Listener<T> extends VailderListener<T> {
+public interface EventListener<T> {
 
         /**
          * 监听到消息

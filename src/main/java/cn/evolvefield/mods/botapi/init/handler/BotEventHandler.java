@@ -4,7 +4,7 @@ import cn.evolvefield.mods.botapi.BotApi;
 import cn.evolvefield.mods.botapi.api.cmd.CmdApi;
 import cn.evolvefield.mods.botapi.util.onebot.CQUtils;
 import cn.evolvefield.onebot.client.handler.EventBus;
-import cn.evolvefield.onebot.client.listener.SimpleListener;
+import cn.evolvefield.onebot.client.listener.SimpleEventListener;
 import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
 import cn.evolvefield.onebot.sdk.event.message.GuildMessageEvent;
 import cn.evolvefield.onebot.sdk.event.notice.group.GroupDecreaseNoticeEvent;
@@ -25,11 +25,10 @@ public class BotEventHandler {
         GroupMemberNotice(dispatchers);
         GuildChatHandler(dispatchers);
         GuildCmdsHandler(dispatchers);
-        dispatchers.start(1);//线程组处理任务
     }
 
     private static void GroupChatHandler(EventBus dispatchers) {
-        dispatchers.addListener(new SimpleListener<GroupMessageEvent>() {
+        dispatchers.addListener(new SimpleEventListener<GroupMessageEvent>() {
             @Override
             public void onMessage(GroupMessageEvent event) {
                 if (ConfigHandler.cached().getCommon().getGroupIdList().contains(event.getGroupId())//判断是否是配置中的群
@@ -57,7 +56,7 @@ public class BotEventHandler {
     }
 
     private static void GroupCmdsHandler(EventBus dispatchers) {
-        dispatchers.addListener(new SimpleListener<GroupMessageEvent>() {
+        dispatchers.addListener(new SimpleEventListener<GroupMessageEvent>() {
             @Override
             public void onMessage(GroupMessageEvent event) {
                 if (ConfigHandler.cached().getCommon().getGroupIdList().contains(event.getGroupId())
@@ -72,7 +71,7 @@ public class BotEventHandler {
     }
 
     private static void GroupMemberNotice(EventBus dispatchers) {
-        dispatchers.addListener(new SimpleListener<GroupDecreaseNoticeEvent>() {
+        dispatchers.addListener(new SimpleEventListener<GroupDecreaseNoticeEvent>() {
             @Override
             public void onMessage(GroupDecreaseNoticeEvent event) {
                 if (ConfigHandler.cached().getCommon().getGroupIdList().contains(event.getGroupId())
@@ -83,7 +82,7 @@ public class BotEventHandler {
             }
         });
 
-        dispatchers.addListener(new SimpleListener<GroupIncreaseNoticeEvent>() {
+        dispatchers.addListener(new SimpleEventListener<GroupIncreaseNoticeEvent>() {
             @Override
             public void onMessage(GroupIncreaseNoticeEvent event) {
                 if (ConfigHandler.cached().getCommon().getGroupIdList().contains(event.getGroupId())
@@ -97,7 +96,7 @@ public class BotEventHandler {
     }
 
     private static void GuildChatHandler(EventBus dispatchers) {
-        dispatchers.addListener(new SimpleListener<GuildMessageEvent>() {
+        dispatchers.addListener(new SimpleEventListener<GuildMessageEvent>() {
             @Override
             public void onMessage(GuildMessageEvent event) {
                 if (event.getGuildId().equals(ConfigHandler.cached().getCommon().getGuildId())
@@ -124,7 +123,7 @@ public class BotEventHandler {
     }
 
     private static void GuildCmdsHandler(EventBus dispatchers) {
-        dispatchers.addListener(new SimpleListener<GuildMessageEvent>() {
+        dispatchers.addListener(new SimpleEventListener<GuildMessageEvent>() {
             @Override
             public void onMessage(GuildMessageEvent event) {
                 if (ConfigHandler.cached().getCommon().getChannelIdList().contains(event.getChannelId())

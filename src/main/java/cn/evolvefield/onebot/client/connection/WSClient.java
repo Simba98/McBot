@@ -57,10 +57,9 @@ public class WSClient extends WebSocketClient {
                         log.debug("请求失败: {}", jsonObject.get("wording").getAsString());
                     } else
                         actionHandler.onReceiveActionResp(jsonObject);//请求执行
-                } else {
-                    queue.add(message);//事件监听
+                } else if (!queue.offer(message)){//事件监听
+                    log.error("监听错误: {}", message);
                 }
-
             }
         } catch (
                 JsonSyntaxException e) {

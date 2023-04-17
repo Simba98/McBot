@@ -29,10 +29,10 @@ public class ConnectCommand {
             ConfigHandler.cached().getBotConfig().setMiraiHttp(false);
 
             try {
-                BotApi.app.submit(() -> {
+                BotApi.app = new Thread(() -> {
                     BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);//创建websocket连接
                     BotApi.bot = BotApi.service.ws.createBot();//创建机器人实例
-                });
+                }, "BotServer");
             } catch (Exception e) {
                 Const.LOGGER.error("§c机器人服务端配置不正确");
             }
@@ -57,10 +57,10 @@ public class ConnectCommand {
             context.getSource().sendSuccess(new StringTextComponent("尝试链接框架" + TextFormatting.LIGHT_PURPLE + "mirai"), true);
             ConfigHandler.cached().getBotConfig().setMiraiHttp(true);
             try {
-                BotApi.app.submit(() -> {
+                BotApi.app = new Thread(() -> {
                     BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);//创建websocket连接
                     BotApi.bot = BotApi.service.ws.createBot();//创建机器人实例
-                });
+                }, "BotServer");
             } catch (Exception e) {
                 Const.LOGGER.error("§c机器人服务端配置不正确");
             }
@@ -80,10 +80,10 @@ public class ConnectCommand {
         context.getSource().sendSuccess(new StringTextComponent("尝试链接框架" + TextFormatting.LIGHT_PURPLE + "cqhttp"), true);
         ConfigHandler.cached().getBotConfig().setMiraiHttp(false);
         try {
-            BotApi.app.submit(() -> {
+            BotApi.app = new Thread(() -> {
                 BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);//创建websocket连接
                 BotApi.bot = BotApi.service.ws.createBot();//创建机器人实例
-            });
+            }, "BotServer");
         } catch (Exception e) {
             Const.LOGGER.error("§c机器人服务端配置不正确");
         }
@@ -100,10 +100,10 @@ public class ConnectCommand {
         context.getSource().sendSuccess(new StringTextComponent("尝试链接框架" + TextFormatting.LIGHT_PURPLE + "mirai"), true);
         ConfigHandler.cached().getBotConfig().setMiraiHttp(true);
         try {
-            BotApi.app.submit(() -> {
+            BotApi.app = new Thread(() -> {
                 BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);//创建websocket连接
                 BotApi.bot = BotApi.service.ws.createBot();//创建机器人实例
-            });
+            }, "BotServer");
         } catch (Exception e) {
             Const.LOGGER.error("§c机器人服务端配置不正确");
         }

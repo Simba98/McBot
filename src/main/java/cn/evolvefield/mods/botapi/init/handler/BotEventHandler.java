@@ -7,8 +7,10 @@ import cn.evolvefield.onebot.client.handler.EventBus;
 import cn.evolvefield.onebot.client.listener.SimpleEventListener;
 import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
 import cn.evolvefield.onebot.sdk.event.message.GuildMessageEvent;
+import cn.evolvefield.onebot.sdk.event.meta.LifecycleMetaEvent;
 import cn.evolvefield.onebot.sdk.event.notice.group.GroupDecreaseNoticeEvent;
 import cn.evolvefield.onebot.sdk.event.notice.group.GroupIncreaseNoticeEvent;
+import lombok.val;
 import lombok.var;
 
 /**
@@ -22,9 +24,10 @@ public class BotEventHandler {
 
         GroupChatHandler(dispatchers);
         GroupCmdsHandler(dispatchers);
-        GroupMemberNotice(dispatchers);
+        GroupNoticeHandler(dispatchers);
         GuildChatHandler(dispatchers);
         GuildCmdsHandler(dispatchers);
+        LifeCycleHandler(dispatchers);
     }
 
     private static void GroupChatHandler(EventBus dispatchers) {
@@ -35,7 +38,7 @@ public class BotEventHandler {
                         && !event.getMessage().startsWith(ConfigHandler.cached().getCmd().getCommandStart())//过滤命令前缀
                         && ConfigHandler.cached().getStatus().isRECEIVE_ENABLED()//总接受开关
                         && ConfigHandler.cached().getStatus().isR_CHAT_ENABLE()//接受聊天开关
-                        && event.getUserId() != ConfigHandler.cached().getCommon().getBotId()
+                        && event.getUserId() != ConfigHandler.cached().getCommon().getBotId()//过滤机器人
                 ) {
 
                     String send = CQUtils.replace(event.getMessage());//暂时匹配仅符合字符串聊天内容与图片
@@ -48,8 +51,6 @@ public class BotEventHandler {
                     }
                     String toSend = String.format("§b[§l%s§r(§5%s§b)]§a<%s>§f %s", ConfigHandler.cached().getCmd().getQqPrefix(), event.getGroupId(), event.getSender().getNickname(), send);
                     TickEventHandler.getToSendQueue().add(toSend);
-
-
                 }
             }
         });
@@ -70,7 +71,7 @@ public class BotEventHandler {
         });
     }
 
-    private static void GroupMemberNotice(EventBus dispatchers) {
+    private static void GroupNoticeHandler(EventBus dispatchers) {
         dispatchers.addListener(new SimpleEventListener<GroupDecreaseNoticeEvent>() {
             @Override
             public void onMessage(GroupDecreaseNoticeEvent event) {
@@ -137,5 +138,26 @@ public class BotEventHandler {
         });
     }
 
+
+    private static void LifeCycleHandler(EventBus dispatchers) {
+        dispatchers.addListener(new SimpleEventListener<LifecycleMetaEvent>() {
+            @Override
+            public void onMessage(LifecycleMetaEvent event) {
+                if (!event.getSubType().equals("connect")) return;
+                if (!ConfigHandler.cached().getCommon().getGroupIdList().isEmpty()
+                ) {
+                    for (val id : ConfigHandler.cached().getCommon().getGroupIdList()){
+                        BotApi.bot.sendGroupMsg(id, "▌ 群服互联已连接 ┈━═☆", true);
+                    }
+                }
+                if (!ConfigHandler.cached().getCommon().getChannelIdList().isEmpty()
+                ) {
+                    for (val id : ConfigHandler.cached().getCommon().getChannelIdList()){
+                        BotApi.bot.sendGuildMsg(ConfigHandler.cached().getCommon().getGuildId() , id, "▌ 群服互联已连接 ┈━═☆");
+                    }
+                }
+            }
+        });
+    }
 
 }

@@ -7,6 +7,10 @@ import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
 import cn.evolvefield.onebot.sdk.event.message.GuildMessageEvent;
 import cn.evolvefield.onebot.sdk.event.message.MessageEvent;
 import lombok.var;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -89,6 +93,20 @@ public class BotUtils {
         String destStr = str.replaceAll("%", "");
         // 查找字符出现的个数 = （原字符串长度 - 替换后的字符串长度）/要查找的字符串长度
         return (str.length() - destStr.length()) / "%".length();
+    }
+
+
+    public static IFormattableTextComponent msgBuild(UserMessage msg){
+        // 拼接要发送对消息
+        return new StringTextComponent(TextFormatting.DARK_GREEN + "[")
+                .append(TextFormatting.AQUA + msg.getPlatform())
+                .append(TextFormatting.WHITE + "(")
+                .append(TextFormatting.DARK_PURPLE + msg.getId())
+                .append(TextFormatting.WHITE + ")")
+                .append(TextFormatting.DARK_GREEN + "]")
+                .append(TextFormatting.GOLD + " <" + msg.getName() + "> ")
+                .append(TextFormatting.WHITE + msg.getMessage() + " ")
+                ;
     }
 
 

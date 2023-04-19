@@ -65,11 +65,11 @@ public class EventBus implements Runnable {
     protected void runTask() {
         String message = this.getTask();//获取消息
         if (message.equals("null")) {
+            log.debug("消息队列为空");
             return;
         }
         Class<? extends Event> messageType = ListenerUtils.getMessageType(message);//获取消息对应的实体类型
         if (messageType == null) {
-            log.debug("消息为空");
             return;
         }
         log.debug(String.format("接收到上报消息内容：%s", messageType));
@@ -82,7 +82,6 @@ public class EventBus implements Runnable {
 
         for (EventListener eventListener : executes) {
                 eventListener.onMessage(bean);//调用监听方法
-
         }
 
     }

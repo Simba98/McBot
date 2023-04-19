@@ -6,6 +6,8 @@ import cn.evolvefield.mods.botapi.init.handler.CustomCmdHandler;
 import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
 import cn.evolvefield.onebot.sdk.event.message.GuildMessageEvent;
 import cn.evolvefield.onebot.sdk.event.message.MessageEvent;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.var;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -109,5 +111,24 @@ public class BotUtils {
                 ;
     }
 
+    @Data
+    @AllArgsConstructor
+    public static class UserMessage {
+        private String platform;
+        private String id;
+        private String name;
+        private String message;
+
+        @Override
+        public String toString() {
+            return "UserMessage{" +
+                    "platform='" + platform + '\'' +
+                    "id='" + id + '\'' +
+                    "name='" + name + '\'' +
+                    ", message='" + message + '\'' +
+                    '}';
+        }
+
+    }
 
 }

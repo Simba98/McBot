@@ -34,8 +34,7 @@ public class BotApi implements ModInitializer {
     public static ConnectFactory service;
     public static EventBus dispatchers;
     public static Bot bot;
-    public static ExecutorService app = Executors.newFixedThreadPool(1);
-    ;
+    public static Thread app;
 
     public BotApi() {
 
@@ -81,10 +80,11 @@ public class BotApi implements ModInitializer {
         blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
         if (ConfigHandler.cached().getCommon().isAutoOpen()) {
             try {
-                app.submit(() -> {
+                app = new Thread(() -> {
                     service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), blockingQueue);//创建websocket连接
                     bot = service.ws.createBot();//创建机器人实例
-                });
+                }, "BotServer");
+                app.start();
             } catch (Exception e) {
                 Const.LOGGER.error("§c机器人服务端未配置或未打开");
             }
@@ -99,7 +99,7 @@ public class BotApi implements ModInitializer {
         Const.LOGGER.info("▌ §c正在关闭群服互联 §a┈━═☆");
         dispatchers.stop();//分发器关闭
         service.stop();
-        app.shutdownNow();
+        app.interrupt();
 
     }
 

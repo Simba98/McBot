@@ -25,6 +25,8 @@
 
 package org.java_websocket;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.enums.*;
@@ -37,8 +39,8 @@ import org.java_websocket.interfaces.ISSLChannel;
 import org.java_websocket.protocols.IProtocol;
 import org.java_websocket.server.WebSocketServer.WebSocketWorker;
 import org.java_websocket.util.Charsetfunctions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.net.ssl.SSLSession;
 import java.io.IOException;
@@ -84,7 +86,7 @@ public class WebSocketImpl implements WebSocket {
    *
    * @since 1.4.0
    */
-  private final Logger log = LoggerFactory.getLogger(WebSocketImpl.class);
+  private final Logger log = LogManager.getLogger(WebSocketImpl.class);
 
   /**
    * Queue of buffers that need to be sent to the client.

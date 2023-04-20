@@ -25,7 +25,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,7 +40,7 @@ public class BotApi {
     public static ConnectFactory service;
     public static EventBus dispatchers;
     public static Bot bot;
-    public static ExecutorService app = Executors.newFixedThreadPool(1);
+    public static Thread app;
     boolean init = false;
     public BotApi() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -76,10 +75,10 @@ public class BotApi {
         blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
         if (ConfigHandler.cached().getCommon().isAutoOpen()) {
             try {
-                app.submit(() -> {
+                app = new Thread(() -> {
                     service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), blockingQueue);//创建websocket连接
                     bot = service.ws.createBot();//创建机器人实例
-                });
+                }, "BotServer");
             } catch (Exception e) {
                 Const.LOGGER.error("§c机器人服务端未配置或未打开");
             }
@@ -94,7 +93,7 @@ public class BotApi {
         Const.LOGGER.info("▌ §c正在关闭群服互联 §a┈━═☆");
         dispatchers.stop();//分发器关闭
         service.stop();
-        app.shutdownNow();
+        app.interrupt();
 
     }
     @SubscribeEvent

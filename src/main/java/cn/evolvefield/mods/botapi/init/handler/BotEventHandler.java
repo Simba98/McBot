@@ -4,7 +4,6 @@ import cn.evolvefield.mods.botapi.BotApi;
 import cn.evolvefield.mods.botapi.api.cmd.CmdApi;
 import cn.evolvefield.mods.botapi.util.onebot.CQUtils;
 import cn.evolvefield.onebot.client.handler.EventBus;
-import cn.evolvefield.onebot.client.listener.SimpleListener;
 import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
 import cn.evolvefield.onebot.sdk.event.message.GuildMessageEvent;
 import cn.evolvefield.onebot.sdk.event.notice.group.GroupDecreaseNoticeEvent;

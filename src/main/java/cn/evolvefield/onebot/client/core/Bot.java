@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.var;
 import org.java_websocket.WebSocket;
 
 /**
@@ -61,13 +62,13 @@ public class Bot {
      */
     public ActionData<MsgId> sendMsg(GroupMessageEvent event, String msg, boolean autoEscape) {
         switch (event.getMessageType()) {
-            case "private" -> {
+            case "private" : {
                 return sendPrivateMsg(event.getUserId(), msg, autoEscape);
             }
-            case "group" -> {
+            case "group" : {
                 return sendGroupMsg(event.getGroupId(), msg, autoEscape);
             }
-            default -> {
+            default : {
             }
         }
         return null;

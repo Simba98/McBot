@@ -36,8 +36,8 @@ import org.java_websocket.protocols.IProtocol;
 import org.java_websocket.protocols.Protocol;
 import org.java_websocket.util.Base64;
 import org.java_websocket.util.Charsetfunctions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -88,7 +88,7 @@ public class Draft_6455 extends Draft {
    *
    * @since 1.4.0
    */
-  private final Logger log = LoggerFactory.getLogger(Draft_6455.class);
+  private final Logger log = LogManager.getLogger(Draft_6455.class);
 
   /**
    * Attribute for the used extension in this draft

@@ -25,10 +25,12 @@
 
 package org.java_websocket;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.java_websocket.framing.CloseFrame;
 import org.java_websocket.util.NamedThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +50,7 @@ public abstract class AbstractWebSocket extends WebSocketAdapter {
    *
    * @since 1.4.0
    */
-  private final Logger log = LoggerFactory.getLogger(AbstractWebSocket.class);
+  private final Logger log = LogManager.getLogger(AbstractWebSocket.class);
 
   /**
    * Attribute which allows you to deactivate the Nagle's algorithm

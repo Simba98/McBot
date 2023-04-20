@@ -42,7 +42,7 @@ public class JsonsObject {
             return null;
         }
         try {
-            return JsonParser.parseString(string);
+            return new  JsonParser().parse(string);
         } catch (Exception e) {
             if (log) {
                 e.printStackTrace();
@@ -103,4 +103,8 @@ public class JsonsObject {
         return this.jsonObject.has(key) ? jsonObject.get(key).getAsJsonArray() : null;
     }
 
+    @Override
+    public String toString() {
+        return jsonObject.toString();
+    }
 }

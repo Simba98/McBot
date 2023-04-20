@@ -5,7 +5,6 @@ import cn.evolvefield.onebot.sdk.action.ActionPath;
 import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonObject;
 import lombok.val;
-import lombok.var;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.WebSocket;

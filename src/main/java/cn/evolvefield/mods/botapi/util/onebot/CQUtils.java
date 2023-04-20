@@ -2,7 +2,6 @@ package cn.evolvefield.mods.botapi.util.onebot;
 
 import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import cn.evolvefield.onebot.sdk.util.BotUtils;
-import cn.evolvefield.onebot.sdk.util.RegexUtils;
 import lombok.val;
 
 import java.util.Arrays;

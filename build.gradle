@@ -129,3 +129,46 @@ java {
     archivesBaseName = project.archives_base_name
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            version = "${project.mod_version}"
+            artifactId = "${project.archives_base_name}"
+            groupId = "${project.maven_group}"
+            pom {
+                name = 'Bot Connect'
+                description = 'Adds chat linking between QQ and Minecraft and QQ commands to request server data.'
+                url = 'https://www.evolvefield.cn/article/14'
+                licenses {
+                    license {
+                        name = 'AGPLV3'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.html'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'cnlimiter'
+                        name = 'cnlimiter'
+                        email = 'cnlimiter@163.com'
+                    }
+                }
+            }
+
+        }
+    }
+    repositories {
+        if (System.getenv('MAVEN_USERNAME') != null && System.getenv('MAVEN_PASSWORD') != null) {
+            maven {
+                name 'release'
+                url = 'https://maven.nova-committee.cn/releases'
+
+                credentials {
+                    username System.getenv('MAVEN_USERNAME')
+                    password System.getenv('MAVEN_PASSWORD')
+                }
+            }
+        }
+    }
+}

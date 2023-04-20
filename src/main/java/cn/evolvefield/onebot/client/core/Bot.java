@@ -25,7 +25,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.var;
 import org.java_websocket.WebSocket;
 
 /**

@@ -5,7 +5,7 @@ import cn.evolvefield.onebot.sdk.entity.MsgChainBean;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import lombok.var;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 

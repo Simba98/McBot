@@ -3,8 +3,9 @@ package cn.evolvefield.mods.botapi.init.handler;
 
 import cn.evolvefield.mods.botapi.BotApi;
 import cn.evolvefield.mods.botapi.util.locale.I18n;
-import lombok.var;
+import lombok.val;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -18,7 +19,7 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        var player = event.getEntity();
+        val player = event.getEntity();
         if (ConfigHandler.cached().getStatus().isS_JOIN_ENABLE() && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
             if (ConfigHandler.cached().getCommon().isGuildOn() && !ConfigHandler.cached().getCommon().getChannelIdList().isEmpty()) {
                 for (String id : ConfigHandler.cached().getCommon().getChannelIdList())
@@ -32,7 +33,7 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public static void playerLeft(PlayerEvent.PlayerLoggedOutEvent event) {
-        var player = event.getEntity();
+        val player = event.getEntity();
         if (ConfigHandler.cached().getStatus().isS_LEAVE_ENABLE() && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
             if (ConfigHandler.cached().getCommon().isGuildOn() && !ConfigHandler.cached().getCommon().getChannelIdList().isEmpty()) {
                 for (String id : ConfigHandler.cached().getCommon().getChannelIdList())
@@ -48,9 +49,9 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public static void playerDeadEvent(LivingDeathEvent event) {
-        var player = event.getEntityLiving();
-        var source = event.getSource();
-        if (player != null && ConfigHandler.cached().getStatus().isS_DEATH_ENABLE() && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
+        val player = event.getEntityLiving();
+        val source = event.getSource();
+        if (player instanceof PlayerEntity && ConfigHandler.cached().getStatus().isS_DEATH_ENABLE() && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
             LivingEntity livingEntity2 = player.getKillCredit();
             String string = "botapi.death.attack." + source.msgId;
             String msg = livingEntity2 != null ? I18n.get(string, player.getDisplayName().getString(), livingEntity2.getDisplayName().getString()) : I18n.get(string, player.getDisplayName().getString());
@@ -67,8 +68,8 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public static void playerAdvancementEvent(AdvancementEvent event) {
-        var player = event.getEntity();
-        var advancement = event.getAdvancement();
+        val player = event.getEntity();
+        val advancement = event.getAdvancement();
         if (ConfigHandler.cached().getStatus().isS_ADVANCE_ENABLE() && advancement.getDisplay() != null && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
             String msg = I18n.get("botapi.chat.type.advancement." + advancement.getDisplay().getFrame().getName(), player.getDisplayName().getString(), I18n.get(advancement.getDisplay().getTitle().getString()));
 

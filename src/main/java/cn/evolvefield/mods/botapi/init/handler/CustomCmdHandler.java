@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import lombok.var;
+import lombok.val;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.io.IOUtils;
@@ -16,6 +16,7 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class CustomCmdHandler {
     }
 
     public void load() {
-        var stopwatch = Stopwatch.createStarted();
+        val stopwatch = Stopwatch.createStarted();
 
         this.writeDefault();
 
@@ -66,13 +67,13 @@ public class CustomCmdHandler {
 
     public void writeDefault() {
         if (!dir.exists() && dir.mkdirs()) {
-            var json = new JsonObject();
+            val json = new JsonObject();
             json.addProperty("alies", "list");
             json.addProperty("content", "list");
             json.addProperty("role", 0);
             json.addProperty("enable", true);
 
-            var json2 = new JsonObject();
+            val json2 = new JsonObject();
             json2.addProperty("alies", "say");
             json2.addProperty("content", "say %");
             json2.addProperty("role", 1);
@@ -82,8 +83,8 @@ public class CustomCmdHandler {
             FileWriter writer2 = null;
 
             try {
-                var file = new File(dir, "list.json");
-                var file2 = new File(dir, "say.json");
+                val file = new File(dir, "list.json");
+                val file2 = new File(dir, "say.json");
                 writer = new FileWriter(file);
                 writer2 = new FileWriter(file2);
 
@@ -103,18 +104,18 @@ public class CustomCmdHandler {
     }
 
     private void loadFiles() {
-        var files = CustomCmdHandler.dir.listFiles((FileFilter) FileFilterUtils.suffixFileFilter(".json"));
+        val files = CustomCmdHandler.dir.listFiles((FileFilter) FileFilterUtils.suffixFileFilter(".json"));
         if (files == null)
             return;
 
-        for (var file : files) {
+        for (val file : files) {
             JsonObject json;
             InputStreamReader reader = null;
             CustomCmd customCmd = null;
 
             try {
-                reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-                var name = file.getName().replace(".json", "");
+                reader = new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
+                val name = file.getName().replace(".json", "");
                 json = new JsonParser().parse(reader).getAsJsonObject();
 
                 customCmd = CustomCmd.loadFromJson(new ResourceLocation(Const.MODID, name), json);

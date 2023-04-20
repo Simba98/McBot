@@ -4,7 +4,7 @@ import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import lombok.var;
+import lombok.val;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -12,7 +12,7 @@ public class RemoveGroupIDCommand {
 
 
     public static int execute(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        var id = context.getArgument("GroupID", Long.class);
+        val id = context.getArgument("GroupID", Long.class);
         if (ConfigHandler.cached().getCommon().getGroupIdList().contains(id)) {
             ConfigHandler.cached().getCommon().removeGroupId(id);
         } else {

@@ -8,7 +8,7 @@ import cn.evolvefield.onebot.client.connection.ConnectFactory;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import lombok.var;
+import lombok.val;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -18,11 +18,11 @@ import java.util.regex.Pattern;
 public class ConnectCommand {
 
     public static int cqhttpExecute(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        var parameter = context.getArgument("parameter", String.class);
+        val parameter = context.getArgument("parameter", String.class);
 
 
-        var pattern = Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d+)");
-        var matcher = pattern.matcher(parameter);
+        val pattern = Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d+)");
+        val matcher = pattern.matcher(parameter);
         if (matcher.find()) {
             ConfigHandler.cached().getBotConfig().setUrl("ws://" + parameter);
             context.getSource().sendSuccess(new StringTextComponent("尝试链接框架" + TextFormatting.LIGHT_PURPLE + "cqhttp"), true);
@@ -48,10 +48,10 @@ public class ConnectCommand {
     }
 
     public static int miraiExecute(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        var parameter = context.getArgument("parameter", String.class);
+        val parameter = context.getArgument("parameter", String.class);
 
-        var pattern = Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d+)");
-        var matcher = pattern.matcher(parameter);
+        val pattern = Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d+)");
+        val matcher = pattern.matcher(parameter);
         if (matcher.find()) {
             ConfigHandler.cached().getBotConfig().setUrl("ws://" + parameter);
             context.getSource().sendSuccess(new StringTextComponent("尝试链接框架" + TextFormatting.LIGHT_PURPLE + "mirai"), true);

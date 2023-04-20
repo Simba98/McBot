@@ -51,7 +51,6 @@ public class BotApi {
         FileUtils.checkFolder(CONFIG_FOLDER);
         CONFIG_FILE = CONFIG_FOLDER.resolve(Const.MODID + ".json").toFile();
         ConfigHandler.init(CONFIG_FILE);
-
     }
 
     @SubscribeEvent

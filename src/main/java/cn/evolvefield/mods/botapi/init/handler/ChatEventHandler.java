@@ -1,7 +1,7 @@
 package cn.evolvefield.mods.botapi.init.handler;
 
 import cn.evolvefield.mods.botapi.BotApi;
-import lombok.var;
+import lombok.val;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -11,9 +11,9 @@ import net.minecraftforge.fml.common.Mod;
 public class ChatEventHandler {
     @SubscribeEvent
     public static void onChatEvent(ServerChatEvent event) {
-        var message = event.getMessage();
-        var player = event.getPlayer();
-        var split = message.split(" ");
+        val message = event.getMessage();
+        val player = event.getPlayer();
+        val split = message.split(" ");
         if (ConfigHandler.cached() != null
                 && ConfigHandler.cached().getStatus().isS_CHAT_ENABLE()
                 && ConfigHandler.cached().getStatus().isSEND_ENABLED()

@@ -4,7 +4,7 @@ package cn.evolvefield.mods.botapi.common.cmds;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import lombok.var;
+import lombok.val;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
@@ -44,11 +44,11 @@ public class HelpCommand {
                         + "QQ群：720975019找群主\n"
                         + "Github：\n";
 
-        var url = "https://github.com/Nova-Committee/Bot-Connect/issues/new";
-        var end = "提交问题";
+        val url = "https://github.com/Nova-Committee/Bot-Connect/issues/new";
+        val end = "提交问题";
 
-        var urlC = new StringTextComponent(url).setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Nova-Committee/Bot-Connect/issues/new")));
-        var endC = new StringTextComponent(end);
+        val urlC = new StringTextComponent(url).setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Nova-Committee/Bot-Connect/issues/new")));
+        val endC = new StringTextComponent(end);
         context.getSource().sendSuccess(new StringTextComponent(toSend).append(urlC).append(endC), true);
         return Command.SINGLE_SUCCESS;
     }

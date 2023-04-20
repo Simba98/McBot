@@ -1,6 +1,6 @@
 package cn.evolvefield.mods.botapi.init.handler;
 
-import lombok.var;
+import lombok.val;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.StringTextComponent;
@@ -20,13 +20,13 @@ public class TickEventHandler {
 
     @SubscribeEvent
     public static void onTickEvent(TickEvent.WorldTickEvent event) {
-        var server = event.world.getServer();
+        val server = event.world.getServer();
         String toSend = toSendQueue.poll();
         if (server != null
                 && ConfigHandler.cached() != null
                 && server.isDedicatedServer()
                 && toSend != null) {
-            var textComponents = new StringTextComponent(toSend);
+            val textComponents = new StringTextComponent(toSend);
             server.getPlayerList().broadcastMessage(textComponents, ChatType.SYSTEM, Util.NIL_UUID);
         }
     }

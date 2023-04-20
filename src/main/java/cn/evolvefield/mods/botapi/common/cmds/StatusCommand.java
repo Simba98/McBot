@@ -6,7 +6,7 @@ import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import lombok.var;
+import lombok.val;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -26,7 +26,7 @@ public class StatusCommand {
         boolean sAchievementsEnabled = ConfigHandler.cached().getStatus().isS_ADVANCE_ENABLE();
         boolean sWelcomeEnabled = ConfigHandler.cached().getStatus().isS_QQ_WELCOME_ENABLE();
 
-        var groupId = ConfigHandler.cached().getCommon().getGroupIdList().toString();
+        val groupId = ConfigHandler.cached().getCommon().getGroupIdList().toString();
         boolean debuggable = ConfigHandler.cached().getCommon().isDebuggable();
         boolean connected = BotApi.service != null;
         boolean white = BotApi.SERVER.getPlayerList().isUsingWhitelist();

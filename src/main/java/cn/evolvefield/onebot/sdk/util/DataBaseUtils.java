@@ -1,5 +1,7 @@
 package cn.evolvefield.onebot.sdk.util;
 
+import lombok.var;
+
 import java.util.zip.CRC32;
 
 /**

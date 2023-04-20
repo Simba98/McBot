@@ -4,6 +4,7 @@ package cn.evolvefield.mods.botapi.init.handler;
 import cn.evolvefield.mods.botapi.BotApi;
 import cn.evolvefield.mods.botapi.util.locale.I18n;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -49,7 +50,7 @@ public class PlayerEventHandler {
     public static void playerDeadEvent(LivingDeathEvent event) {
         var player = event.getEntity();
         var source = event.getSource();
-        if (player != null && ConfigHandler.cached().getStatus().isS_DEATH_ENABLE() && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
+        if (player instanceof Player && ConfigHandler.cached().getStatus().isS_DEATH_ENABLE() && ConfigHandler.cached().getStatus().isSEND_ENABLED()) {
             LivingEntity livingEntity2 = player.getKillCredit();
             String string = "botapi.death.attack." + source.msgId;
             String msg = livingEntity2 != null ? I18n.get(string, player.getDisplayName().getString(), livingEntity2.getDisplayName().getString()) : I18n.get(string, player.getDisplayName().getString());

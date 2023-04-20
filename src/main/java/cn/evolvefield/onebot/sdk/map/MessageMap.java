@@ -5,6 +5,8 @@ import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
 import cn.evolvefield.onebot.sdk.event.message.GuildMessageEvent;
 import cn.evolvefield.onebot.sdk.event.message.PrivateMessageEvent;
 import cn.evolvefield.onebot.sdk.event.message.WholeMessageEvent;
+import cn.evolvefield.onebot.sdk.event.meta.HeartbeatMetaEvent;
+import cn.evolvefield.onebot.sdk.event.meta.LifecycleMetaEvent;
 import cn.evolvefield.onebot.sdk.event.notice.friend.FriendAddNoticeEvent;
 import cn.evolvefield.onebot.sdk.event.notice.friend.PrivateMsgDeleteNoticeEvent;
 import cn.evolvefield.onebot.sdk.event.notice.group.*;
@@ -48,5 +50,9 @@ public class MessageMap {
         messageMap.put("friend_recall", PrivateMsgDeleteNoticeEvent.class);
         messageMap.put("essence", GroupEssenceNoticeEvent.class);
         messageMap.put("offline_file", ReceiveOfflineFilesNoticeEvent.class);
+
+        messageMap.put("lifecycle", LifecycleMetaEvent.class);
+        messageMap.put("heartbeat", HeartbeatMetaEvent.class);
+
     }
 }

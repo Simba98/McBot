@@ -101,7 +101,7 @@ public class ConfigHandler {
                             Path changed = (Path) event.context();
                             if (changed.endsWith(lastFile.getName()) && isLoaded()) {
                                 if (reload())
-                                    Const.LOGGER.info("已经重新加载位于" + lastFile.getCanonicalPath() + "的配置文件!");
+                                    Const.LOGGER.info("已经重新加载位于" + lastFile.getPath() + "的配置文件!");
                             }
                         }
                         checker.reset();

@@ -2,10 +2,13 @@ package cn.evolvefield.onebot.client.handler;
 
 import cn.evolvefield.onebot.client.util.ActionSendUtils;
 import cn.evolvefield.onebot.sdk.action.ActionPath;
+import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonObject;
+import lombok.val;
+import lombok.var;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.java_websocket.WebSocket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +22,7 @@ import java.util.Map;
  */
 
 public class ActionHandler {
-    private static final Logger log = LoggerFactory.getLogger("Action");
+    private static final Logger log = LogManager.getLogger("Action");
     /**
      * 请求回调数据
      */
@@ -34,8 +37,8 @@ public class ActionHandler {
      *
      * @param respJson 回调结果
      */
-    public void onReceiveActionResp(JsonObject respJson) {
-        String echo = respJson.get("echo").getAsString();
+    public void onReceiveActionResp(JsonsObject respJson) {
+        String echo = respJson.optString("echo");
         ActionSendUtils actionSendUtils = apiCallbackMap.get(echo);
         if (actionSendUtils != null) {
             // 唤醒挂起的线程
@@ -50,21 +53,22 @@ public class ActionHandler {
      * @param params  请求参数
      * @return 请求结果
      */
-    public JsonObject action(WebSocket channel, ActionPath action, JsonObject params) {
+    public JsonsObject action(WebSocket channel, ActionPath action, JsonObject params) {
         if (!channel.isOpen()) {
             return null;
         }
         var reqJson = generateReqJson(action, params);
         ActionSendUtils actionSendUtils = new ActionSendUtils(channel, 3000L);
         apiCallbackMap.put(reqJson.get("echo").getAsString(), actionSendUtils);
-        JsonObject result;
+        JsonsObject result;
         try {
             result = actionSendUtils.send(reqJson);
         } catch (Exception e) {
             log.warn("Request failed: {}", e.getMessage());
-            result = new JsonObject();
-            result.addProperty("status", "failed");
-            result.addProperty("retcode", -1);
+            val result1 = new JsonObject();
+            result1.addProperty("status", "failed");
+            result1.addProperty("retcode", -1);
+            result = new JsonsObject(result1);
         }
         return result;
     }

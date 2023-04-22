@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.version_prefix + "-" + project.mod_version
+version = project.minecraft_version + "-" + project.mod_version
 group = project.maven_group
 
 repositories {
@@ -28,13 +28,10 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
-    modImplementation include("cn.evolvefield.bot:OneBot-Client:${project.sdk_version}")
+    modImplementation include("cn.evolvefield.bot:OneBot-Client:${project.client_version}")
     modImplementation include("blue.endless:jankson:${project.jankson_version}")
 
-
-    //modImplementation include("eu.pb4:placeholder-api:${project.placeholder_version}")
-    annotationProcessor "cn.evolvefield.bot:OneBot-Client:${project.sdk_version}"
+    annotationProcessor "cn.evolvefield.bot:OneBot-Client:${project.client_version}"
     annotationProcessor "org.projectlombok:lombok:1.18.24"
 
 }
@@ -76,7 +73,7 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
 
-            version = "${project.version_prefix}" + "-" + "${project.mod_version}"
+            version = "${project.minecraft_version}" + "-" + "${project.mod_version}"
             artifactId = "${project.archives_base_name}"
             groupId = "${project.maven_group}"
             pom {

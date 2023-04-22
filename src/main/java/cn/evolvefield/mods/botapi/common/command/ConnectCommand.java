@@ -27,8 +27,11 @@ public class ConnectCommand {
             context.getSource().sendSuccess(Component.literal("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "cqhttp"), true);
             ConfigHandler.cached().getBotConfig().setMiraiHttp(false);
             try {
-                BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);
-                BotApi.bot = BotApi.service.createBot();//创建机器人实例
+                BotApi.app = new Thread(() -> {
+                    BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);//创建websocket连接
+                    BotApi.bot = BotApi.service.ws.createBot();//创建机器人实例
+                }, "BotServer");
+                BotApi.app.start();
             } catch (Exception e) {
                 Const.LOGGER.error(e.getMessage());
             }
@@ -53,8 +56,11 @@ public class ConnectCommand {
             context.getSource().sendSuccess(Component.literal("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "mirai"), true);
             ConfigHandler.cached().getBotConfig().setMiraiHttp(true);
             try {
-                BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);
-                BotApi.bot = BotApi.service.createBot();//创建机器人实例
+                BotApi.app = new Thread(() -> {
+                    BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);//创建websocket连接
+                    BotApi.bot = BotApi.service.ws.createBot();//创建机器人实例
+                }, "BotServer");
+                BotApi.app.start();
             } catch (Exception e) {
                 Const.LOGGER.error(e.getMessage());
             }
@@ -74,8 +80,11 @@ public class ConnectCommand {
         context.getSource().sendSuccess(Component.literal("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "cqhttp"), true);
         ConfigHandler.cached().getBotConfig().setMiraiHttp(false);
         try {
-            BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);
-            BotApi.bot = BotApi.service.createBot();//创建机器人实例
+            BotApi.app = new Thread(() -> {
+                BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);//创建websocket连接
+                BotApi.bot = BotApi.service.ws.createBot();//创建机器人实例
+            }, "BotServer");
+            BotApi.app.start();
         } catch (Exception e) {
             Const.LOGGER.error(e.getMessage());
         }
@@ -92,8 +101,11 @@ public class ConnectCommand {
         context.getSource().sendSuccess(Component.literal("尝试链接框架" + ChatFormatting.LIGHT_PURPLE + "mirai"), true);
         ConfigHandler.cached().getBotConfig().setMiraiHttp(true);
         try {
-            BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);
-            BotApi.bot = BotApi.service.createBot();//创建机器人实例
+            BotApi.app = new Thread(() -> {
+                BotApi.service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), BotApi.blockingQueue);//创建websocket连接
+                BotApi.bot = BotApi.service.ws.createBot();//创建机器人实例
+            }, "BotServer");
+            BotApi.app.start();
         } catch (Exception e) {
             Const.LOGGER.error(e.getMessage());
         }

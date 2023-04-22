@@ -33,7 +33,7 @@ public class BotApi implements ModInitializer {
     public static ConnectFactory service;
     public static EventBus dispatchers;
     public static Bot bot;
-    private static Thread thread;
+    public static Thread app;
 
     public BotApi() {
 
@@ -48,27 +48,8 @@ public class BotApi implements ModInitializer {
         return SERVER;
     }
 
-    private static void killOutThreads() {
-        try {
-            ConfigHandler.save();//保存配置
-            Const.LOGGER.info("▌ §c正在关闭群服互联 §a┈━═☆");
-            CustomCmdHandler.INSTANCE.clear();//自定义命令持久层清空
-            dispatchers.stop();//分发器关闭
-            Const.isShutdown = true;
-            ConfigHandler.watcher.get().close();//配置监控关闭
-            BotApi.configWatcherExecutorService.shutdownNow();//监控进程关闭
-            service.ws.disconnect();//ws客户端关闭
-            thread.interrupt();
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void onInitialize() {
-        Const.ChatImageOn = FabricLoader.getInstance().isModLoaded("chatimage");
         CONFIG_FOLDER = FabricLoader.getInstance().getConfigDir().resolve("botapi");
         FileUtils.checkFolder(CONFIG_FOLDER);
         CONFIG_FILE = CONFIG_FOLDER.resolve(Const.MODID + ".json").toFile();
@@ -81,32 +62,50 @@ public class BotApi implements ModInitializer {
         PlayerEventHandler.init();
         ChatEventHandler.init();
         TickEventHandler.init();
-        //Runtime.getRuntime().addShutdownHook(new Thread(BotApi::killOutThreads));
+        Runtime.getRuntime().addShutdownHook(new Thread(BotApi::killOutThreads));
+    }
+
+
+    private void onServerStarted(MinecraftServer server) {
+        blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
+        if (ConfigHandler.cached().getCommon().isAutoOpen()) {
+            try {
+                app = new Thread(() -> {
+                    service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), blockingQueue);//创建websocket连接
+                    bot = service.ws.createBot();//创建机器人实例
+                }, "BotServer");
+                app.start();
+            } catch (Exception e) {
+                Const.LOGGER.error("§c机器人服务端未配置或未打开");
+            }
+        }
+        dispatchers = new EventBus(blockingQueue);//创建事件分发器
+        CustomCmdHandler.INSTANCE.load();//自定义命令加载
+        BotEventHandler.init(dispatchers);//事件监听
     }
 
     private void onServerStopping(MinecraftServer server) {
+        Const.isShutdown = true;
+        Const.LOGGER.info("▌ §c正在关闭群服互联 §a┈━═☆");
+        dispatchers.stop();//分发器关闭
+        service.stop();
+        app.interrupt();
+
     }
 
     private void onServerStopped(MinecraftServer server) {
         killOutThreads();
     }
 
-    private void onServerStarted(MinecraftServer server) {
-        blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
-        if (ConfigHandler.cached().getCommon().isAutoOpen()) {
-            thread = new Thread(() -> {
-                try {
-                    service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), blockingQueue);
-                    bot = service.createBot();//创建机器人实例
-                } catch (Exception e) {
-                    Const.LOGGER.error("§c机器人服务端未配置或未打开");
-                }
-            });
-            thread.start();
 
+    private static void killOutThreads() {
+        try {
+            ConfigHandler.save();//保存配置
+            CustomCmdHandler.INSTANCE.clear();//自定义命令持久层清空
+            ConfigHandler.watcher.get().close();//配置监控关闭
+            BotApi.configWatcherExecutorService.shutdownNow();//监控进程关闭
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        dispatchers = new EventBus(blockingQueue);//创建事件分发器
-        CustomCmdHandler.INSTANCE.load();//自定义命令加载
-        BotEventHandler.init(dispatchers);//事件监听
     }
 }

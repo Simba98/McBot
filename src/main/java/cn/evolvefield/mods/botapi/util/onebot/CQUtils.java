@@ -2,7 +2,6 @@ package cn.evolvefield.mods.botapi.util.onebot;
 
 import cn.evolvefield.mods.botapi.init.handler.ConfigHandler;
 import cn.evolvefield.onebot.sdk.util.BotUtils;
-import cn.evolvefield.onebot.sdk.util.RegexUtils;
 import lombok.val;
 
 import java.util.Arrays;
@@ -40,12 +39,16 @@ public class CQUtils {
             val data = matcher.group(2);
             switch (type) {
                 case "image": {
-                    val url = Arrays.stream(data.split(","))//具体数据分割
-                            .filter(it -> it.startsWith("url"))//非空判断
-                            .map(it -> it.substring(it.indexOf('=') + 1))
-                            .findFirst();
-                    if (url.isPresent()) {
-                        matcher.appendReplacement(message, String.format("[[CICode,url=%s,name=来自QQ的图片]]", url.get()));
+                    if (ConfigHandler.cached().getCommon().isImageOn()) {
+                        val url = Arrays.stream(data.split(","))//具体数据分割
+                                .filter(it -> it.startsWith("url"))//非空判断
+                                .map(it -> it.substring(it.indexOf('=') + 1))
+                                .findFirst();
+                        if (url.isPresent()) {
+                            matcher.appendReplacement(message, String.format("[[CICode,url=%s,name=来自QQ的图片]]", url.get()));
+                        } else {
+                            matcher.appendReplacement(message, "[图片]");
+                        }
                     } else {
                         matcher.appendReplacement(message, "[图片]");
                     }
@@ -84,7 +87,7 @@ public class CQUtils {
                     matcher.appendReplacement(message, "[回复]");
                     break;
                 default:
-                    matcher.appendReplacement(message, "?");
+                    matcher.appendReplacement(message, "[?]");
                     break;
             }
         }

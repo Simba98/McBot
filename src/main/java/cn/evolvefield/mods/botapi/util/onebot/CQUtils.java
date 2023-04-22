@@ -32,7 +32,7 @@ public class CQUtils {
     public static String replace(String msg) {
         if (msg.indexOf('[') == -1)
             return BotUtils.unescape(msg);
-        String message = "";
+        StringBuilder message = new StringBuilder();
         Pattern pattern = Pattern.compile(CQ_CODE_REGEX);
         Matcher matcher = pattern.matcher(msg);
         while (matcher.find()) {//全局匹配
@@ -40,18 +40,14 @@ public class CQUtils {
             val data = matcher.group(2);
             switch (type) {
                 case "image": {
-                    if (ConfigHandler.cached().getCommon().isImageOn()) {
-                        val url = Arrays.stream(data.split(","))//具体数据分割
-                                .filter(it -> it.startsWith("url"))//非空判断
-                                .map(it -> it.substring(it.indexOf('=') + 1))
-                                .findFirst();
-                        if (url.isPresent()) {
-                            message = matcher.replaceFirst(String.format("[[CICode,url=%s,name=来自QQ的图片]]", url.get()));
-                        } else {
-                            message = matcher.replaceFirst("[图片]");
-                        }
+                    val url = Arrays.stream(data.split(","))//具体数据分割
+                            .filter(it -> it.startsWith("url"))//非空判断
+                            .map(it -> it.substring(it.indexOf('=') + 1))
+                            .findFirst();
+                    if (url.isPresent()) {
+                        matcher.appendReplacement(message, String.format("[[CICode,url=%s,name=来自QQ的图片]]", url.get()));
                     } else {
-                        message = matcher.replaceFirst("[图片]");
+                        matcher.appendReplacement(message, "[图片]");
                     }
                     break;
                 }
@@ -61,34 +57,38 @@ public class CQUtils {
                             .map(it -> it.substring(it.indexOf('=') + 1))
                             .findFirst();
                     if (id.isPresent()) {
-                        message = matcher.replaceFirst(String.format("@%s", id.get()));
+                        matcher.appendReplacement(message, String.format("[@%s]", id.get()));
                     } else {
-                        message = matcher.replaceFirst("[@]");
+                        matcher.appendReplacement(message, "[@]");
                     }
                     break;
                 case "record":
-                    message = matcher.replaceFirst("[语音]");
+                    matcher.appendReplacement(message, "[语音]");
                     break;
                 case "forward":
-                    message = matcher.replaceFirst("[合并转发]");
+                    matcher.appendReplacement(message, "[合并转发]");
                     break;
                 case "video":
-                    message = matcher.replaceFirst("[视频]");
+                    matcher.appendReplacement(message, "[视频]");
                     break;
                 case "music":
-                    message = matcher.replaceFirst("[音乐]");
+                    matcher.appendReplacement(message, "[音乐]");
                     break;
                 case "redbag":
-                    message = matcher.replaceFirst("[红包]");
+                    matcher.appendReplacement(message, "[红包]");
                     break;
                 case "face":
-                    message = matcher.replaceFirst("[表情]");
+                    matcher.appendReplacement(message, "[表情]");
+                    break;
+                case "reply":
+                    matcher.appendReplacement(message, "[回复]");
                     break;
                 default:
-                    message = matcher.replaceFirst("[?]");
+                    matcher.appendReplacement(message, "?");
                     break;
             }
         }
-        return message;
+        matcher.appendTail(message);
+        return message.toString();
     }
 }

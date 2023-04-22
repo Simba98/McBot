@@ -16,6 +16,7 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +114,7 @@ public class CustomCmdHandler {
             CustomCmd customCmd = null;
 
             try {
-                reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+                reader = new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
                 val name = file.getName().replace(".json", "");
                 json = new JsonParser().parse(reader).getAsJsonObject();
 

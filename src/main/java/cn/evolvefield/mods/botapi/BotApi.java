@@ -79,6 +79,7 @@ public class BotApi {
                     service = new ConnectFactory(ConfigHandler.cached().getBotConfig(), blockingQueue);//创建websocket连接
                     bot = service.ws.createBot();//创建机器人实例
                 }, "BotServer");
+                app.start();
             } catch (Exception e) {
                 Const.LOGGER.error("§c机器人服务端未配置或未打开");
             }

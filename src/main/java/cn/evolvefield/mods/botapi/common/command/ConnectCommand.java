@@ -37,7 +37,7 @@ public class ConnectCommand {
             }
             ConfigHandler.cached().getStatus().setRECEIVE_ENABLED(true);
             ConfigHandler.cached().getCommon().setEnable(true);
-
+            ConfigHandler.save();
             return Command.SINGLE_SUCCESS;
 
         } else {
@@ -66,7 +66,7 @@ public class ConnectCommand {
             }
             ConfigHandler.cached().getStatus().setRECEIVE_ENABLED(true);
             ConfigHandler.cached().getCommon().setEnable(true);
-
+            ConfigHandler.save();
             return Command.SINGLE_SUCCESS;
 
         } else {

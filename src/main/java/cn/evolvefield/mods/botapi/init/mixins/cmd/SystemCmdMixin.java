@@ -13,6 +13,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * Project: Bot-Connect-fabric-1.18
  * Author: cnlimiter
@@ -37,11 +39,11 @@ public class SystemCmdMixin {
                         for (String id : ConfigHandler.cached().getCommon().getChannelIdList())
                             BotApi.bot.sendGuildMsg(ConfigHandler.cached().getCommon().getGuildId(),
                                     id,
-                                    String.format("[" + ConfigHandler.cached().getCmd().getMcSystemPrefix() + "] %s", playerChatMessage.serverContent().getString()));
+                                    String.format("[" + ConfigHandler.cached().getCmd().getMcSystemPrefix() + "] %s", new String(playerChatMessage.serverContent().getString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8)));
                     } else {
                         for (long id : ConfigHandler.cached().getCommon().getGroupIdList())
                             BotApi.bot.sendGroupMsg(id,
-                                    String.format("[" + ConfigHandler.cached().getCmd().getMcSystemPrefix() + "] %s", playerChatMessage.serverContent().getString()),
+                                    String.format("[" + ConfigHandler.cached().getCmd().getMcSystemPrefix() + "] %s", new String(playerChatMessage.serverContent().getString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8)),
                                     true);
                     }
                 }

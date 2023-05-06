@@ -48,7 +48,13 @@ public class BotEventHandler {
                             send = split[1];
                         else return;
                     }
-                    String toSend = String.format("§b[§l%s§r(§5%s§b)]§a<%s>§f %s", ConfigHandler.cached().getCmd().getQqPrefix(), event.getGroupId(), event.getSender().getNickname(), send);
+
+                    String toSend = ConfigHandler.cached().getCmd().isPrefixOn()
+                            ? ConfigHandler.cached().getCmd().isIdPrefixOn()
+                                ? String.format("§b[§l%s§r(§5%s§b)]§a<%s>§f %s", ConfigHandler.cached().getCmd().getQqPrefix(), event.getGroupId(), event.getSender().getNickname(), send)
+                                : String.format("§b[§l%s§b]§a<%s>§f %s", ConfigHandler.cached().getCmd().getQqPrefix(), event.getSender().getNickname(), send)
+                            : String.format("§a<%s>§f %s", event.getSender().getNickname(), send);
+
                     TickEventHandler.getToSendQueue().add(toSend);
                 }
             }
@@ -114,7 +120,11 @@ public class BotEventHandler {
                             send = split[1];
                         else return;
                     }
-                    String toSend = String.format("§b[§l%s§r(§5%s§b)]§a<%s>§f %s", ConfigHandler.cached().getCmd().getGuildPrefix(), event.getChannelId(), event.getSender().getNickname(), send);
+                    String toSend = ConfigHandler.cached().getCmd().isPrefixOn()
+                            ? ConfigHandler.cached().getCmd().isIdPrefixOn()
+                            ? String.format("§b[§l%s§r(§5%s§b)]§a<%s>§f %s", ConfigHandler.cached().getCmd().getGuildPrefix(), event.getChannelId(), event.getSender().getNickname(), send)
+                            : String.format("§b[§l%s§b]§a<%s>§f %s", ConfigHandler.cached().getCmd().getGuildPrefix(), event.getSender().getNickname(), send)
+                            : String.format("§a<%s>§f %s", event.getSender().getNickname(), send);
                     TickEventHandler.getToSendQueue().add(toSend);
 
                 }

@@ -107,15 +107,24 @@ public class ModConfig {
                         "%Player% 不在线或者不存在哦\n" +
                         "还他妈不上线搁这玩QQ呢~";//暂时没用
 
+        @SerializedName("prefixOn")
+        @Comment("是否开启显示到游戏中的前缀")
+        private boolean prefixOn = true;//是否开启显示到游戏中的前缀
+        @SerializedName("idPrefixOn")
+        @Comment("是否开启显示到游戏中的id前缀")
+        private boolean idPrefixOn = true;//是否开启显示到游戏中的id前缀
         @SerializedName("qqPrefix")
         @Comment("来自q群显示到游戏中的前缀")
         private String qqPrefix = "群聊";//来自q群显示到游戏中的前缀
         @SerializedName("guildPrefix")
         @Comment("来自频道显示到游戏中的前缀")
         private String guildPrefix = "频道";//来自频道显示到游戏中的前缀
+
         @SerializedName("mcPrefix")
         @Comment("来自游戏的消息前缀")
         private String mcPrefix = "MC";//来自游戏的消息前缀
+
+
         @SerializedName("mcChatPrefixEnable")
         @Comment("游戏中系统命令发送的消息头")
         private boolean mcChatPrefixEnable = false;//游戏中系统命令发送的消息头

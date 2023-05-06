@@ -11,9 +11,6 @@ import net.minecraft.util.GsonHelper;
  * Version: 1.0
  */
 public class CustomCmd {
-
-    private final ResourceLocation id;
-
     private final String cmdAlies;
 
     private final String cmdContent;
@@ -22,30 +19,25 @@ public class CustomCmd {
 
     private boolean enabled = true;
 
-    public CustomCmd(ResourceLocation id, String cmdAlies, String cmdContent, int requirePermission) {
-        this.id = id;
+    public CustomCmd(String cmdAlies, String cmdContent, int requirePermission) {
         this.cmdAlies = cmdAlies;
         this.cmdContent = cmdContent;
         this.requirePermission = requirePermission;
     }
 
-    public static CustomCmd loadFromJson(ResourceLocation id, JsonObject json) {
+    public static CustomCmd loadFromJson(JsonObject json) {
 
         var alies = GsonHelper.getAsString(json, "alies");
         var content = GsonHelper.getAsString(json, "content");
         int role = GsonHelper.getAsInt(json, "role", 0);
 
-        var cmd = new CustomCmd(id, alies, content, role);
+        var cmd = new CustomCmd(alies, content, role);
 
         var enabled = GsonHelper.getAsBoolean(json, "enabled", true);
 
         cmd.setEnabled(enabled);
 
         return cmd;
-    }
-
-    public ResourceLocation getId() {
-        return id;
     }
 
     public String getCmdAlies() {

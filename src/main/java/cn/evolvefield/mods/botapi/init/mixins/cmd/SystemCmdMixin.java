@@ -29,7 +29,7 @@ public class SystemCmdMixin {
     private static void say_register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register((Commands.literal("say").requires((commandSourceStack) -> commandSourceStack.hasPermission(2))).then(Commands.argument("message", MessageArgument.message()).executes((commandContext) -> {
             Component component = MessageArgument.getMessage(commandContext, "message");
-            Component component2 = new TextComponent(String.format("[%s] %s", commandContext.getSource().getDisplayName(), component));
+            Component component2 = new TextComponent(String.format("[%s] %s", commandContext.getSource().getDisplayName().getString(), component.getString()));
             Entity entity = commandContext.getSource().getEntity();
             /////////////////////////
             if (FabricLoader.getInstance().isModLoaded("botapi")

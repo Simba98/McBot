@@ -1,6 +1,7 @@
 package cn.evolvefield.mods.botapi.api.cmd;
 
 import cn.evolvefield.mods.botapi.BotApi;
+import cn.evolvefield.mods.botapi.Const;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -37,8 +38,8 @@ public class BotCmdRun extends CommandSourceStack {
     @Override
     public void sendSuccess(@NotNull Component component, boolean p_81356_) {
         super.sendSuccess(component, p_81356_);
+        Const.LOGGER.info(component.getString());
         this.outPut.add(component.getString());
-
     }
 
 

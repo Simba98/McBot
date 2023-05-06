@@ -22,6 +22,7 @@ dependencies {
 
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     compileOnly 'org.projectlombok:lombok:1.18.24'
+    modRuntimeOnly fileTree(dir: 'libs', include: ['*.jar'])
     mappings loom.layered() {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchement_version}@zip")

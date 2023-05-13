@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 
-archivesBaseName = "${mod_name}-core-${api_version}"
+archivesBaseName = "${archives_base_name}-${api_version}"
 
 
 repositories {
@@ -16,12 +16,8 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:0.80.0+1.19.4"
-    modImplementation include("cn.evolvefield.bot:OneBot-Client:${project.client_version}")
-    modImplementation include("blue.endless:jankson:${project.jankson_version}")
 
-    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor "org.projectlombok:lombok:1.18.24"
+
 }
 
 processResources {
@@ -32,7 +28,6 @@ processResources {
     }
 }
 
-jar.enabled(true)
 
 tasks.register('prepareWorkspace') {
 

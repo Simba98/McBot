@@ -2,7 +2,7 @@ package cn.evole.mods.mcbot.util.onebot;
 
 import cn.evole.mods.mcbot.Const;
 import cn.evole.mods.mcbot.init.handler.ConfigHandler;
-import cn.evolvefield.onebot.sdk.util.BotUtils;
+import cn.evole.onebot.sdk.util.BotUtils;
 import lombok.val;
 
 import java.util.Arrays;

@@ -3,8 +3,8 @@ package cn.evole.mods.mcbot.util.onebot;
 import cn.evole.mods.mcbot.McBot;
 import cn.evole.mods.mcbot.api.CustomCmd;
 import cn.evole.mods.mcbot.init.handler.CustomCmdHandler;
-import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
-import cn.evolvefield.onebot.sdk.event.message.GuildMessageEvent;
+import cn.evole.onebot.sdk.event.message.GroupMessageEvent;
+import cn.evole.onebot.sdk.event.message.GuildMessageEvent;
 import lombok.val;
 
 import java.util.Arrays;

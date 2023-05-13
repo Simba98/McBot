@@ -25,5 +25,13 @@
     "fabricloader": "*",
     "fabric": "*",
     "minecraft": "*"
-  }
+  },
+  "jars": [
+    {
+      "file": "META-INF/jars/OneBot-Client-0.3.6-light.jar"
+    },
+    {
+      "file": "META-INF/jars/jankson-1.2.1.jar"
+    }
+  ]
 }

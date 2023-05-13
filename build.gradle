@@ -1,13 +1,51 @@
 plugins{
-    id "java"
+    id "java-library"
 }
 
 
+allprojects {
+    {
+        apply plugin: 'java-library'
+    }
 
+    jar {
+
+        duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+        baseName 'Bot-Connect-fabric'
+        into("META-INF/jars/"){
+            from("build/dependLibs/"){
+                include('OneBot-Client-0.3.6-light.jar', 'jankson-1.2.1.jar')
+            }
+        }
+        from(
+                'build/api/classes/java/main/',
+                'build/r18/classes/java/main/',
+                'build/api/resources/main/',
+
+        )
+
+        from(rootProject.file("LICENSE")) {
+            rename { "${it}_${archives_base_name}" }
+        }
+        manifest {
+            attributes([
+                    'Specification-Title'     : archives_base_name,
+                    'Specification-Vendor'    : mod_author,
+                    'Specification-Version'   : project.jar.archiveVersion,
+                    'Implementation-Title'    : project.name,
+                    'Implementation-Version'  : project.jar.archiveVersion,
+                    'Implementation-Vendor'   : mod_author,
+                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    'Timestamp'               : System.currentTimeMillis(),
+                    'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
+            ])
+        }
+    }
+}
 
 subprojects {
     {
-        apply plugin: 'java'
+        apply plugin: 'java-library'
     }
 
 
@@ -25,60 +63,24 @@ subprojects {
             url = 'https://repo.spongepowered.org/repository/maven-public/'
         }
         maven {
-            name = 'BlameJared Maven (CrT / Bookshelf)'
-            url = 'https://maven.blamejared.com'
-        }
-        maven {
-            name = "CottonMC"
-            url = "https://server.bbkr.space/artifactory/libs-release"
-        }
-        maven {
-            name = 'ParchmentMC'
-            url = 'https://maven.parchmentmc.org'
-        }
-        maven {
-            name = "Ladysnake"
-            url = "https://ladysnake.jfrog.io/artifactory/mods"
-        }
-        maven {
-            name = "Shedaniel"
-            url = "https://maven.shedaniel.me/"
-        }
-        maven {
-            name = "TerraformersMC"
-            url = "https://maven.terraformersmc.com"
-        }
-        maven {
-            name = "Nucleoid"
-            url = "https://maven.nucleoid.xyz/"
-        }
-        maven {
-            name = "Modrinth"
-            url = "https://api.modrinth.com/maven"
-            content {
-                includeGroup "maven.modrinth"
-            }
-        }
-        maven {
             name = "Nova"
             url = "https://maven.nova-committee.cn/releases"
         }
-        maven {
-            name = "curse"
-            url = "https://www.cursemaven.com"
-            content {
-                includeGroup "curse.maven"
-            }
-        }
-        maven {
-            url = "https://maven.saps.dev/minecraft"
-            content {
-                includeGroup "dev.latvian.mods"
-                includeGroup "dev.ftb.mods"
-            }
-        }
+
     }
 
+    tasks.register('copyJars', Copy) {
+        from configurations.runtimeClasspath
+        into "${rootProject.buildDir}/dependLibs" // 目标位置
+    }
+
+    dependencies {
+        implementation "cn.evole.bot:OneBot-Client:${project.client_version}"
+        implementation "blue.endless:jankson:${project.jankson_version}"
+        implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor "org.projectlombok:lombok:1.18.24"
+    }
 
     tasks.withType(JavaCompile).configureEach {
         it.options.encoding = 'UTF-8'

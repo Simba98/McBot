@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ModMixinConfig implements IMixinConfigPlugin {
-    private static final String MIXIN_PACKAGE_ROOT = "cn.evole.test.multiversion.mixin.";
+    private static final String MIXIN_PACKAGE_ROOT = "cn.evole.mods.mcbot.mixin.";
     private final Logger logger = LogManager.getLogger("AMixin");
     @Override
     public void onLoad(String mixinPackage) {
@@ -75,7 +75,7 @@ public class ModMixinConfig implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (!start) {
             logger.info("=======================================================");
-            logger.info(" McBot - Test.");
+            logger.info(" McBot - cnlimiter.");
             logger.info(" Copyright (c) 2019-2023 cnlimiter. Running on MC " + MinecraftVersionHelper.getCurrentVersion());
             logger.info("=======================================================");
         }

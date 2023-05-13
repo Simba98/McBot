@@ -2,7 +2,7 @@ package cn.evole.mods.mcbot.init.config;
 
 import blue.endless.jankson.Comment;
 import blue.endless.jankson.annotation.SerializedName;
-import cn.evolvefield.onebot.client.config.BotConfig;
+import cn.evole.onebot.client.config.BotConfig;
 import lombok.Data;
 
 import java.util.HashSet;

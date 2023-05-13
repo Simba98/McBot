@@ -1,0 +1,69 @@
+tasks.register('modify') {
+    String filePath = "${rootProject.buildDir}/api/resources/main/fabric.mod.json";
+    File file = new File(filePath);
+    System.out.println("path===============" + file.getPath());
+    System.out.println("AbsolutePath=======" + file.getAbsolutePath());
+    HashMap<String, String> hashMap = new HashMap<>();
+    hashMap.put("MainActivity", "十一国庆节");
+    hashMap.put("请背诵全文", "今天放假不上课");
+    String totalContent = readFileContent(filePath, hashMap);
+    writeFile(filePath, totalContent);
+}
+
+
+//把文件内容找到并修改
+def readFileContent(String filePath, HashMap<String, String> hashMap) {
+    StringBuilder result = new StringBuilder();
+    BufferedReader bufferedReader = null;
+    try {
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream,
+                StandardCharsets.UTF_8);
+        bufferedReader = new BufferedReader(inputStreamReader);
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            for (Map.Entry<String, String> entry : hashMap.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (line.contains(key)) {
+                    line = line.replace(key, value);
+                }
+            }
+            result.append(line);
+            result.append(System.getProperty("line.separator"));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (bufferedReader != null) {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    return result.toString();
+}
+
+//写回文件
+def writeFile(String filePath, String content) {
+    BufferedWriter bufferedWriter = null;
+    try {
+        FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream,
+                StandardCharsets.UTF_8);
+        bufferedWriter = new BufferedWriter(outputStreamWriter);
+        bufferedWriter.write(content);
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (bufferedWriter != null) {
+            try {
+                bufferedWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

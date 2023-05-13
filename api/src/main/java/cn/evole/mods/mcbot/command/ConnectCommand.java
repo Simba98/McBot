@@ -5,7 +5,7 @@ import cn.evole.mods.mcbot.Const;
 import cn.evole.mods.mcbot.McBot;
 import cn.evole.mods.mcbot.init.handler.ConfigHandler;
 import cn.evole.mods.multi.common.ComponentWrapper;
-import cn.evolvefield.onebot.client.connection.ConnectFactory;
+import cn.evole.onebot.client.connection.ConnectFactory;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lombok.val;

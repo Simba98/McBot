@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 
-archivesBaseName = "${mod_name}-dan-${r18_version}"
+archivesBaseName = "${archives_base_name}-${r18_version}"
 
 dependencies {
     minecraft "com.mojang:minecraft:1.18.2"
@@ -31,13 +31,4 @@ loom {
     }
 }
 
-jar.enabled(true)
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
-}
 

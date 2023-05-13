@@ -3,9 +3,9 @@ package cn.evole.mods.mcbot.api;
 import cn.evole.mods.mcbot.McBot;
 import cn.evole.mods.mcbot.init.handler.CustomCmdHandler;
 import cn.evole.mods.mcbot.util.onebot.BotUtils;
-import cn.evolvefield.onebot.client.core.Bot;
-import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
-import cn.evolvefield.onebot.sdk.event.message.GuildMessageEvent;
+import cn.evole.onebot.client.core.Bot;
+import cn.evole.onebot.sdk.event.message.GroupMessageEvent;
+import cn.evole.onebot.sdk.event.message.GuildMessageEvent;
 
 /**
  * Description:

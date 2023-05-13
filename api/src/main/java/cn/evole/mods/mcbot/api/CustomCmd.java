@@ -1,6 +1,6 @@
 package cn.evole.mods.mcbot.api;
 
-import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
+import cn.evole.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonObject;
 import lombok.val;
 

@@ -9,7 +9,7 @@ name: Forge Action
 
 on:
   push:
-    branches: [ "forge" ]
+    branches: [ "forge-jdk8" ]
 
 
 jobs:

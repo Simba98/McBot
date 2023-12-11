@@ -44,6 +44,12 @@ tasks.register('copyJars', Copy) {
     into "$rootDir/build/libs"
 }
 
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+tasks.withType(JavaCompile).configureEach {
+    options.setEncoding("UTF-8")
+}
+
 buildNeeded.finalizedBy("copyJars")
 
 version = project.mod_version

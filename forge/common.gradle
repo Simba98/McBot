@@ -64,6 +64,8 @@ processResources {
     }
 }
 
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
 tasks.withType(JavaCompile).configureEach {
     options.setEncoding("UTF-8")
 }

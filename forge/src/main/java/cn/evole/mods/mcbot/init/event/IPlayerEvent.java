@@ -53,7 +53,8 @@ public class IPlayerEvent {
                 Component component = source.getEntity() == null ? source.getDirectEntity().getDisplayName() : source.getEntity().getDisplayName();
                 Entity sourceEntity = source.getEntity();
                 ItemStack itemStack;
-                if (sourceEntity instanceof LivingEntity livingEntity3) {
+                if (sourceEntity instanceof LivingEntity) {
+                    LivingEntity livingEntity3 = (LivingEntity) sourceEntity;
                     itemStack = livingEntity3.getMainHandItem();
                 } else {
                     itemStack = ItemStack.EMPTY;
